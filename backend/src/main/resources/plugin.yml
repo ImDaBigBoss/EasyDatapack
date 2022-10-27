@@ -1,0 +1,5 @@
+name: EasyDatapack
+version: 1.0
+main: com.github.imdabigboss.easydatapack.backend.EasyDatapack
+api-version: 1.19
+softdepend: [GeyserMC-Spigot, floodgate]
