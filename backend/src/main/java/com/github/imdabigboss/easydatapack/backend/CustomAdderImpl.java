@@ -11,15 +11,22 @@ import com.github.imdabigboss.easydatapack.api.exceptions.EasyDatapackException;
 import com.github.imdabigboss.easydatapack.api.items.CustomItem;
 import com.github.imdabigboss.easydatapack.backend.managers.*;
 import org.bukkit.inventory.Recipe;
+import org.geysermc.geyser.api.event.lifecycle.GeyserDefineCustomItemsEvent;
+import org.geysermc.geyser.api.item.custom.CustomItemData;
+import org.geysermc.geyser.api.item.custom.CustomItemOptions;
 
 public class CustomAdderImpl extends CustomAdder {
+    private final GeyserDefineCustomItemsEvent event;
+
     private final BlockManagerImpl blockManager;
     private final DimensionManagerImpl dimensionManager;
     private final EnchantmentManagerImpl enchantmentManager;
     private final ItemManagerImpl itemManager;
     private final RecipeManagerImpl recipeManager;
 
-    public CustomAdderImpl(EasyDatapack datapack) {
+    public CustomAdderImpl(EasyDatapack datapack, GeyserDefineCustomItemsEvent event) {
+        this.event = event;
+
         this.blockManager = datapack.getBlockManager();
         this.dimensionManager = datapack.getDimensionManager();
         this.enchantmentManager = datapack.getEnchantmentManager();
@@ -45,6 +52,20 @@ public class CustomAdderImpl extends CustomAdder {
     @Override
     public void register(CustomItem item) throws EasyDatapackException {
         this.itemManager.registerCustomItem(item);
+
+        if (this.event != null) {
+            CustomItemOptions options = CustomItemOptions.builder()
+                    .customModelData(item.getCustomModelData())
+                    .build();
+
+            CustomItemData data = CustomItemData.builder()
+                    .name(item.getNamespaceKey())
+                    .customItemOptions(options)
+                    .displayName(item.getName())
+                    .build();
+
+            this.event.register(item.getBaseMaterial().getKey().toString(), data);
+        }
     }
 
     @Override
