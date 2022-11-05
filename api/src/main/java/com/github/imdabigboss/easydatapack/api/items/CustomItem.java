@@ -13,6 +13,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+/**
+ * This class represents a custom item.
+ */
 public class CustomItem {
     private final int customModelData;
     private final String namespaceKey;
@@ -37,7 +42,7 @@ public class CustomItem {
 
     protected ItemStack itemStack;
 
-    protected CustomItem(int customModelData, String namespaceKey, String name, Material baseMaterial, boolean unbreakable, boolean hideFlags, boolean newItem, Class<? extends Listener> eventListener, Consumer<PlayerInteractEvent> itemUseEvent, boolean spacingBeforeLore, String[] lore, Map<Attribute, List<AttributeModifier>> attributeModifiers, Map<Enchantment, Integer> enchantments) {
+    protected CustomItem(int customModelData, @NonNull String namespaceKey, @NonNull String name, @NonNull Material baseMaterial, boolean unbreakable, boolean hideFlags, boolean newItem, @Nullable Class<? extends Listener> eventListener, @Nullable Consumer<PlayerInteractEvent> itemUseEvent, boolean spacingBeforeLore, @Nullable String[] lore, @NonNull Map<Attribute, List<AttributeModifier>> attributeModifiers, @NonNull Map<Enchantment, Integer> enchantments) {
         this.customModelData = customModelData;
         this.namespaceKey = namespaceKey;
         this.name = name;
@@ -101,90 +106,165 @@ public class CustomItem {
         this.itemStack.setItemMeta(itemMeta);
     }
 
+    /**
+     * Gets the custom model data of the item.
+     * @return the custom model data of the item
+     */
     public int getCustomModelData() {
         return this.customModelData;
     }
 
-    public String getNamespaceKey() {
+    /**
+     * Gets the namespace key of the item.
+     * @return the namespace key of the item
+     */
+    public @NonNull String getNamespaceKey() {
         return this.namespaceKey;
     }
 
-    public NamespacedKey getNamespacedKey() {
+    /**
+     * Gets the namespaced key of the item.
+     * @return the namespaced key of the item
+     */
+    public @NonNull NamespacedKey getNamespacedKey() {
         return new NamespacedKey(EasyDatapackAPI.NAMESPACE_KEY, this.namespaceKey);
     }
 
-    public String getName() {
+    /**
+     * Gets the name of the item.
+     * @return the name of the item
+     */
+    public @NonNull String getName() {
         return this.name;
     }
 
-    public Material getBaseMaterial() {
+    /**
+     * Gets the base material of the item.
+     * @return the base material of the item
+     */
+    public @NonNull Material getBaseMaterial() {
         return this.baseMaterial;
     }
 
+    /**
+     * Gets if the item is unbreakable.
+     * @return if the item is unbreakable
+     */
     public boolean isUnbreakable() {
         return this.unbreakable;
     }
 
+    /**
+     * Gets if the item hides flags.
+     * @return if the item hides flags
+     */
     public boolean isHideFlags() {
         return this.hideFlags;
     }
 
+    /**
+     * Gets if the item is a new item or if it is an extension of an existing item.
+     * @return if the item is a new item
+     */
     public boolean isNewItem() {
         return this.newItem;
     }
 
-    public Class<? extends Listener> getEventListener() {
+    /**
+     * Gets the event listener of the item.
+     * @return the event listener of the item
+     */
+    public @Nullable Class<? extends Listener> getEventListener() {
         return this.eventListener;
     }
 
-    public Consumer<PlayerInteractEvent> getItemUseEvent() {
+    /**
+     * Gets the event that is fired when the item is used.
+     * @return the event that is fired when the item is used
+     */
+    public @Nullable Consumer<PlayerInteractEvent> getItemUseEvent() {
         return this.itemUseEvent;
     }
 
-    public String[] getLore() {
+    /**
+     * Gets the item's lore.
+     * @return the item's lore
+     */
+    public @Nullable String[] getLore() {
         return this.lore;
     }
 
-    public AttributeInformation[] getAttributeModifiers() {
+    /**
+     * Gets the item's attribute modifiers.
+     * @return the item's attribute modifiers
+     */
+    public @NonNull AttributeInformation[] getAttributeModifiers() {
         return this.attributeModifiers;
     }
 
-    public EnchantmentInformation[] getEnchantments() {
+    /**
+     * Gets the item's enchantments.
+     * @return the item's enchantments
+     */
+    public @NonNull EnchantmentInformation[] getEnchantments() {
         return this.enchantments;
     }
 
-    public ItemStack getItemStack() {
+    /**
+     * Gets the item stack of the item.
+     * @return the item stack of the item
+     */
+    public @NonNull ItemStack getItemStack() {
         return this.itemStack;
     }
 
+    /**
+     * This class represents the information about an attribute modifier.
+     */
     public static class AttributeInformation {
         private final Attribute attribute;
         private final AttributeModifier[] modifier;
 
-        public AttributeInformation(Attribute attribute, AttributeModifier[] modifier) {
+        /**
+         * Creates a new attribute information.
+         * @param attribute the attribute
+         * @param modifier the modifier
+         */
+        public AttributeInformation(@NonNull Attribute attribute, @NonNull AttributeModifier[] modifier) {
             this.attribute = attribute;
             this.modifier = modifier;
         }
 
-        public Attribute getAttribute() {
+        /**
+         * Gets the attribute.
+         * @return the attribute
+         */
+        public @NonNull Attribute getAttribute() {
             return this.attribute;
         }
 
-        public AttributeModifier[] getModifiers() {
+        /**
+         * Gets the modifier.
+         * @return the modifier
+         */
+        public @NonNull AttributeModifier[] getModifiers() {
             return this.modifier;
         }
     }
 
+    /**
+     * This class represents the information about an enchantment.
+     */
     public static class EnchantmentInformation {
         private final Enchantment enchantment;
         private final int level;
 
-        public EnchantmentInformation(Enchantment enchantment, int level) {
+        public EnchantmentInformation(@NonNull Enchantment enchantment, int level) {
             this.enchantment = enchantment;
             this.level = level;
         }
 
-        public Enchantment getEnchantment() {
+        public @NonNull Enchantment getEnchantment() {
             return this.enchantment;
         }
 
@@ -209,6 +289,13 @@ public class CustomItem {
         protected Map<Attribute, List<AttributeModifier>> attributeModifiers = new HashMap<>();
         protected Map<Enchantment, Integer> enchantments = new HashMap<>();
 
+        /**
+         * Creates a new item builder.
+         * @param customModelData the custom model data of the item
+         * @param namespaceKey the namespace key of the item
+         * @param name the name of the item
+         * @param baseMaterial the base material of the item
+         */
         public Builder(int customModelData, String namespaceKey, String name, Material baseMaterial) {
             this.customModelData = customModelData;
             this.namespaceKey = namespaceKey;
@@ -216,49 +303,97 @@ public class CustomItem {
             this.baseMaterial = baseMaterial;
         }
 
-        public Builder unbreakable(boolean unbreakable) {
+        /**
+         * Sets if the item is unbreakable.
+         * @param unbreakable if the item is unbreakable
+         * @return the builder
+         */
+        public @NonNull Builder unbreakable(boolean unbreakable) {
             this.unbreakable = unbreakable;
             return this;
         }
 
-        public Builder hideFlags(boolean hideFlags) {
+        /**
+         * Sets if the item hides flags.
+         * @param hideFlags if the item hides flags
+         * @return the builder
+         */
+        public @NonNull Builder hideFlags(boolean hideFlags) {
             this.hideFlags = hideFlags;
             return this;
         }
 
-        public Builder newItem(boolean newItem) {
+        /**
+         * Sets if the item is a new item or if it is an extension of an existing item.
+         * @param newItem if the item is a new item
+         * @return the builder
+         */
+        public @NonNull Builder newItem(boolean newItem) {
             this.newItem = newItem;
             return this;
         }
 
-        public Builder itemUseEvent(Consumer<PlayerInteractEvent> itemUseEvent) {
+        /**
+         * Sets the event listener of the item.
+         * @param itemUseEvent the event listener of the item
+         * @return the builder
+         */
+        public @NonNull Builder itemUseEvent(@Nullable Consumer<PlayerInteractEvent> itemUseEvent) {
             this.itemUseEvent = itemUseEvent;
             return this;
         }
 
-        public Builder eventListener(Class<? extends Listener> eventListener) {
+        /**
+         * Sets the event listener of the item.
+         * @param eventListener the event listener of the item
+         * @return the builder
+         */
+        public @NonNull Builder eventListener(@Nullable Class<? extends Listener> eventListener) {
             this.eventListener = eventListener;
             return this;
         }
 
-        public Builder lore(boolean spacingBeforeLore, String... lore) {
+        /**
+         * Sets the item lore.
+         * @param spacingBeforeLore if there should be spacing before the lore
+         * @param lore the lore
+         * @return the builder
+         */
+        public @NonNull Builder lore(boolean spacingBeforeLore, String... lore) {
             this.spacingBeforeLore = spacingBeforeLore;
             this.lore = lore;
             return this;
         }
 
-        public Builder lore(String... lore) {
+        /**
+         * Sets the item lore.
+         * @param lore the lore
+         * @return the builder
+         */
+        public @NonNull Builder lore(@Nullable String... lore) {
             this.spacingBeforeLore = true;
             this.lore = lore;
             return this;
         }
 
-        public Builder attributeModifier(Attribute attribute, AttributeModifier attributeModifier) {
+        /**
+         * Adds an attribute modifier to the item.
+         * @param attribute the attribute
+         * @param attributeModifier the attribute modifier
+         * @return the builder
+         */
+        public @NonNull Builder attributeModifier(@NonNull Attribute attribute, @NonNull AttributeModifier attributeModifier) {
             this.attributeModifiers.computeIfAbsent(attribute, k -> new ArrayList<>()).add(attributeModifier);
             return this;
         }
 
-        public Builder enchantment(Enchantment enchantment, int level) {
+        /**
+         * Adds an enchantment to the item.
+         * @param enchantment the enchantment
+         * @param level the level
+         * @return the builder
+         */
+        public @NonNull Builder enchantment(@NonNull Enchantment enchantment, int level) {
             if (this.enchantments.containsKey(enchantment)) {
                 throw new IllegalArgumentException("Enchantment " + enchantment.getKey() + " is already added to this item");
             }
@@ -267,7 +402,11 @@ public class CustomItem {
             return this;
         }
 
-        public CustomItem build() {
+        /**
+         * Builds the item.
+         * @return the item
+         */
+        public @NonNull CustomItem build() {
             return new CustomItem(this.customModelData, this.namespaceKey, this.name, this.baseMaterial, this.unbreakable, this.hideFlags, this.newItem, this.eventListener, this.itemUseEvent, this.spacingBeforeLore, this.lore, this.attributeModifiers, this.enchantments);
         }
     }

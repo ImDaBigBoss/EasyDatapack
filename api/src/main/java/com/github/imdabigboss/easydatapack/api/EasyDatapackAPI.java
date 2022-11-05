@@ -2,15 +2,26 @@ package com.github.imdabigboss.easydatapack.api;
 
 import com.github.imdabigboss.easydatapack.api.managers.*;
 import com.github.imdabigboss.easydatapack.api.utils.YmlConfig;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.function.Consumer;
 
+/**
+ * This class is used to get functions from the instance of {@link EasyDatapackBase}.
+ */
 public class EasyDatapackAPI {
     private static EasyDatapackBase api = null;
 
+    /**
+     * The EasyDatapack namespace key.
+     */
     public static final String NAMESPACE_KEY = "easydatapack";
 
-    public static void set(EasyDatapackBase api) {
+    /**
+     * Sets the EasyDatapack API instace. This should only be called by EasyDatapack.
+     * @param api the EasyDatapack API instance
+     */
+    public static void set(@NonNull EasyDatapackBase api) {
         if (EasyDatapackAPI.api != null) {
             throw new RuntimeException("EasyDatapackAPI is already set!");
         }
@@ -18,35 +29,68 @@ public class EasyDatapackAPI {
         EasyDatapackAPI.api = api;
     }
 
-    public static void registerCustomAdder(Consumer<CustomAdder> customAdder) {
+    /**
+     * Registers function that takes a {@link CustomAdder} as an argument and that will be called when EasyDatapack is
+     * enabled to register custom components.
+     * @param customAdder the custom adder
+     */
+    public static void registerCustomAdder(@NonNull Consumer<CustomAdder> customAdder) {
         api.registerCustomAdder(customAdder);
     }
 
-    public static YmlConfig getAPIConfig() {
+    /**
+     * Gets the EasyDatapack config.
+     * @return the EasyDatapack config
+     */
+    public static @NonNull YmlConfig getAPIConfig() {
         return api.getAPIConfig();
     }
 
-    public static RecipeManager getRecipeManager() {
+    /**
+     * Gets the EasyDatapack recipe manager.
+     * @return the EasyDatapack recipe manager
+     */
+    public static @NonNull RecipeManager getRecipeManager() {
         return api.getRecipeManager();
     }
 
-    public static BlockManager getBlockManager() {
+    /**
+     * Gets the EasyDatapack block manager.
+     * @return the EasyDatapack block manager
+     */
+    public static @NonNull BlockManager getBlockManager() {
         return api.getBlockManager();
     }
 
-    public static DimensionManager getDimensionManager() {
+    /**
+     * Gets the EasyDatapack dimension manager.
+     * @return the EasyDatapack dimension manager
+     */
+    public static @NonNull DimensionManager getDimensionManager() {
         return api.getDimensionManager();
     }
 
-    public static EnchantmentManager getEnchantmentManager() {
+    /**
+     * Gets the EasyDatapack enchantment manager.
+     * @return the EasyDatapack enchantment manager
+     */
+    public static @NonNull EnchantmentManager getEnchantmentManager() {
         return api.getEnchantmentManager();
     }
 
-    public static ItemManager getItemManager() {
+    /**
+     * Gets the EasyDatapack item manager.
+     * @return the EasyDatapack item manager
+     */
+    public static @NonNull ItemManager getItemManager() {
         return api.getItemManager();
     }
 
-    public static MapManager getMapManager() {
+    /**
+     * Gets the EasyDatapack map manager.
+     * @return the EasyDatapack map manager
+     */
+    public static @NonNull MapManager getMapManager() {
         return api.getMapManager();
     }
 }

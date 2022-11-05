@@ -23,6 +23,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -102,7 +103,7 @@ public class EnchantmentManagerImpl implements Listener, EnchantmentManager {
     }
 
     @Override
-    public void reformatItemNameColours(ItemStack original, ItemStack result) {
+    public void reformatItemNameColours(@NonNull ItemStack original, @NonNull ItemStack result) {
         if (!original.hasItemMeta() || !result.hasItemMeta()) {
             return;
         }
@@ -140,7 +141,7 @@ public class EnchantmentManagerImpl implements Listener, EnchantmentManager {
     }
 
     @Override
-    public List<CustomEnchantment> getEnchantments() {
+    public @NonNull List<CustomEnchantment> getEnchantments() {
         return new ArrayList<>(enchantments.values());
     }
 
@@ -231,7 +232,7 @@ public class EnchantmentManagerImpl implements Listener, EnchantmentManager {
     }
 
     @Override
-    public void updateItemLoreEnchants(ItemStack item) {
+    public void updateItemLoreEnchants(@NonNull ItemStack item) {
         for (CustomEnchantment enchantment : this.enchantments.values()) {
             LoreUtil.delLore(item, enchantment.getKey().getKey());
         }

@@ -16,6 +16,7 @@ import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.bukkit.map.MapView.Scale;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -71,7 +72,7 @@ public class MapManagerImpl implements Listener, MapManager {
     }
 
     @Override
-    public ItemStack createMap(URL url) {
+    public ItemStack createMap(@NonNull URL url) {
         World world = this.datapack.getServer().getWorld("world");
         if (world == null) {
             return null;

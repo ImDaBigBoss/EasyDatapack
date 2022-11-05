@@ -5,6 +5,7 @@ import com.github.imdabigboss.easydatapack.api.utils.nbt.*;
 import org.bukkit.Location;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.plugin.Plugin;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,8 +16,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Some utilities for schematics
+ */
 public class Schematics {
-    public static Schematic loadSchematic(Plugin plugin, String schematicName) throws SchematicException {
+    /**
+     * Loads a schematic from a file.
+     * @param plugin the plugin
+     * @param schematicName the name of the schematic
+     * @return the schematic
+     */
+    public static @NonNull Schematic loadSchematic(@NonNull Plugin plugin, @NonNull String schematicName) throws SchematicException {
         InputStream stream = plugin.getResource("schematics/" + schematicName + ".easyschem");
         if (stream == null) {
             throw new SchematicException("Schematic not found");
@@ -65,7 +75,16 @@ public class Schematics {
         return new Schematic(blocks, width, height, depth, baseWidth, baseDepth, baseOffset);
     }
 
-    public static boolean createSchematic(Location start, Location end, Location baseStart, Location baseEnd, File file) {
+    /**
+     * Saves a schematic to a file.
+     * @param start the start location
+     * @param end the end location
+     * @param baseStart the base start location
+     * @param baseEnd the base end location
+     * @param file the file
+     * @return the schematic
+     */
+    public static boolean createSchematic(@NonNull Location start, @NonNull Location end, @NonNull Location baseStart, @NonNull Location baseEnd, @NonNull File file) {
         if (!start.getWorld().getName().equals(end.getWorld().getName())) {
             return false;
         }

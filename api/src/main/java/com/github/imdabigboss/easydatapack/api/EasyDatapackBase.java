@@ -2,23 +2,27 @@ package com.github.imdabigboss.easydatapack.api;
 
 import com.github.imdabigboss.easydatapack.api.managers.*;
 import com.github.imdabigboss.easydatapack.api.utils.YmlConfig;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.function.Consumer;
 
+/**
+ * This is the main class of EasyDatapack. Use {@link EasyDatapackAPI} if you want to interact with EasyDatapack.
+ */
 public interface EasyDatapackBase {
-    void registerCustomAdder(Consumer<CustomAdder> customAdder);
+    void registerCustomAdder(@NonNull Consumer<CustomAdder> customAdder);
 
-    YmlConfig getAPIConfig();
+    @NonNull YmlConfig getAPIConfig();
 
-    RecipeManager getRecipeManager();
+    @NonNull RecipeManager getRecipeManager();
 
-    BlockManager getBlockManager();
+    @NonNull BlockManager getBlockManager();
 
-    DimensionManager getDimensionManager();
+    @NonNull DimensionManager getDimensionManager();
 
-    EnchantmentManager getEnchantmentManager();
+    @NonNull EnchantmentManager getEnchantmentManager();
 
-    ItemManager getItemManager();
+    @NonNull ItemManager getItemManager();
 
-    MapManager getMapManager();
+    @NonNull MapManager getMapManager();
 }

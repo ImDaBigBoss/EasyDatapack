@@ -9,6 +9,7 @@ import com.github.imdabigboss.easydatapack.backend.managers.*;
 import com.github.imdabigboss.easydatapack.backend.utils.YmlConfigImpl;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,9 +55,10 @@ public class EasyDatapack extends JavaPlugin implements EasyDatapackBase {
 
         log.info(String.format("[%s] Registering custom components.", getDescription().getName()));
         CustomAdderImpl customAdder = new CustomAdderImpl(this);
-        for (Consumer<CustomAdder> customAdderConsumer : customAdders) {
+        for (Consumer<CustomAdder> customAdderConsumer : this.customAdders) {
             customAdderConsumer.accept(customAdder);
         }
+        this.customAdders = null;
 
         this.enchantmentManager.registerEventListeners();
         this.itemManager.registerEventListeners();
@@ -79,7 +81,7 @@ public class EasyDatapack extends JavaPlugin implements EasyDatapackBase {
     }
 
     @Override
-    public void registerCustomAdder(Consumer<CustomAdder> customAdder) {
+    public void registerCustomAdder(@NonNull Consumer<CustomAdder> customAdder) {
         if (this.customAdders == null) {
             throw new RuntimeException("Custom adders can no longer be registered, the plugin has already registered all the custom components");
         }
@@ -88,37 +90,37 @@ public class EasyDatapack extends JavaPlugin implements EasyDatapackBase {
     }
 
     @Override
-    public YmlConfig getAPIConfig() {
+    public @NonNull YmlConfig getAPIConfig() {
         return this.config;
     }
 
     @Override
-    public RecipeManagerImpl getRecipeManager() {
+    public @NonNull RecipeManagerImpl getRecipeManager() {
         return recipeManager;
     }
 
     @Override
-    public BlockManagerImpl getBlockManager() {
+    public @NonNull BlockManagerImpl getBlockManager() {
         return blockManager;
     }
 
     @Override
-    public DimensionManagerImpl getDimensionManager() {
+    public @NonNull DimensionManagerImpl getDimensionManager() {
         return dimensionManager;
     }
 
     @Override
-    public EnchantmentManagerImpl getEnchantmentManager() {
+    public @NonNull EnchantmentManagerImpl getEnchantmentManager() {
         return enchantmentManager;
     }
 
     @Override
-    public ItemManagerImpl getItemManager() {
+    public @NonNull ItemManagerImpl getItemManager() {
         return itemManager;
     }
 
     @Override
-    public MapManagerImpl getMapManager() {
+    public @NonNull MapManagerImpl getMapManager() {
         return mapManager;
     }
 }

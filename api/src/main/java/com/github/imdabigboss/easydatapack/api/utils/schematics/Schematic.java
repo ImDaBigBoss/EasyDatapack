@@ -5,7 +5,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.generator.LimitedRegion;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
+/**
+ * This class represents a schematic.
+ */
 public class Schematic {
     private final BlockData[] blocks;
     private final int width;
@@ -16,7 +20,7 @@ public class Schematic {
     private final int baseDepth;
     private final int[] baseOffset;
 
-    public Schematic(BlockData[] blocks, int width, int height, int depth, int baseWidth, int baseDepth, int[] baseOffset) {
+    public Schematic(@NonNull BlockData[] blocks, int width, int height, int depth, int baseWidth, int baseDepth, int[] baseOffset) {
         this.blocks = blocks;
         this.width = width;
         this.height = height;
@@ -27,7 +31,7 @@ public class Schematic {
         this.baseOffset = baseOffset;
     }
 
-    public BlockData[] getBlocks() {
+    public @NonNull BlockData[] getBlocks() {
         return blocks;
     }
 
@@ -117,11 +121,19 @@ public class Schematic {
         }
     }
 
-    public void pasteSchematic(Location location) throws SchematicException {
+    /**
+     * Pastes the schematic at the specified location.
+     * @param location the location to paste the schematic at
+     */
+    public void pasteSchematic(@NonNull Location location) throws SchematicException {
         this.pasteSchematic(location, PlacerType.LOCATION, location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }
 
-    public void pasteSchematic(LimitedRegion limitedRegion, int placeX, int placeY, int placeZ) throws SchematicException {
+    /**
+     * Pastes the schematic at the specified location.
+     * @param limitedRegion the limited region to paste the schematic at
+     */
+    public void pasteSchematic(@NonNull LimitedRegion limitedRegion, int placeX, int placeY, int placeZ) throws SchematicException {
         this.pasteSchematic(limitedRegion, PlacerType.LIMITED_REGION, placeX, placeY, placeZ);
     }
 }

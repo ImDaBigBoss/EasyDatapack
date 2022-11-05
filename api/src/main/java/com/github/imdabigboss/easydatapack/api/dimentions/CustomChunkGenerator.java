@@ -5,43 +5,57 @@ import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.WorldInfo;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * A custom chunk generator.
+ */
 public abstract class CustomChunkGenerator extends ChunkGenerator {
     protected final BiomeProvider biomeProvider;
     private final List<BlockPopulator> blockPopulators;
 
-    public CustomChunkGenerator(BiomeProvider biomeProvider, CustomChunkPopulator... chunkPopulators) {
+    /**
+     * Creates a new custom chunk generator.
+     * @param biomeProvider the biome provider
+     * @param chunkPopulators the chunk populators used to generate the world
+     */
+    public CustomChunkGenerator(@NonNull BiomeProvider biomeProvider, @Nullable CustomChunkPopulator... chunkPopulators) {
         this.biomeProvider = biomeProvider;
 
         for (CustomChunkPopulator chunkPopulator : chunkPopulators) {
             chunkPopulator.setBiomeProvider(this.biomeProvider);
         }
 
-        this.blockPopulators = List.of(new CustomBlockPopulator(chunkPopulators));
+        if (chunkPopulators == null || chunkPopulators.length == 0) {
+            this.blockPopulators = new ArrayList<>();
+        } else {
+            this.blockPopulators = new ArrayList<>(List.of(new CustomBlockPopulator(chunkPopulators)));
+        }
     }
 
-    public CustomChunkGenerator(BiomeProvider biomeProvider) {
+    /**
+     * Creates a new custom chunk generator.
+     * @param biomeProvider the biome provider
+     */
+    public CustomChunkGenerator(@NonNull BiomeProvider biomeProvider) {
         this.biomeProvider = biomeProvider;
         this.blockPopulators = new ArrayList<>();
     }
 
     @Override
-    public abstract void generateNoise(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ, @NotNull ChunkGenerator.ChunkData chunkData);
+    public abstract void generateNoise(@NonNull WorldInfo worldInfo, @NonNull Random random, int chunkX, int chunkZ, ChunkGenerator.@NonNull ChunkData chunkData);
 
-    @NotNull
-    public List<BlockPopulator> getDefaultPopulators(@NotNull World world) {
+    public @NonNull List<BlockPopulator> getDefaultPopulators(@NonNull World world) {
         return this.blockPopulators;
     }
 
     @Override
-    @Nullable
-    public BiomeProvider getDefaultBiomeProvider(@NotNull WorldInfo worldInfo) {
+    public @Nullable BiomeProvider getDefaultBiomeProvider(@NonNull WorldInfo worldInfo) {
         return this.biomeProvider;
     }
 

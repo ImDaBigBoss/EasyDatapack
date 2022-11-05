@@ -1,13 +1,22 @@
 package com.github.imdabigboss.easydatapack.api.utils;
 
 import org.bukkit.ChatColor;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Some utilities for strings.
+ */
 public class StringUtil {
-    public static String toRoman(int number) {
+    /**
+     * Converts an integer to a roman numeral.
+     * @param number the number to convert
+     * @return the roman numeral, or 0 because 0 doesn't exist in roman numerals
+     */
+    public static @NonNull String toRoman(int number) {
         if (number == 0) {
             return "0";
         }
@@ -60,7 +69,7 @@ public class StringUtil {
         return roman.toString();
     }
 
-    public static String color(String str) {
+    public static @NonNull String color(@NonNull String str) {
         Matcher matcher = Pattern.compile("#([A-Fa-f\b]{6})").matcher(str);
 
         StringBuilder buffer = new StringBuilder(str.length() + 4 * 8);
@@ -72,12 +81,17 @@ public class StringUtil {
         return matcher.appendTail(buffer).toString();
     }
 
-    public static List<String> color(List<String> list) {
+    public static @NonNull List<String> color(@NonNull List<String> list) {
         list.replaceAll(StringUtil::color);
         return list;
     }
 
-    public static String removeColors(String str) {
+    /**
+     * Removes all the colours from a string.
+     * @param str the string to remove colours from
+     * @return the string without colours
+     */
+    public static @NonNull String removeColors(@NonNull String str) {
         String tmp = ChatColor.stripColor(str);
         return tmp == null ? "" : tmp;
     }

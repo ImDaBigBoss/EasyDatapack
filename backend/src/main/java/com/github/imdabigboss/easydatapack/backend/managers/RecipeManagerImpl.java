@@ -6,6 +6,7 @@ import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Recipe;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +39,12 @@ public class RecipeManagerImpl implements RecipeManager {
     }
 
     @Override
-    public List<NamespacedKey> getRecipeNamespaceKeys() {
+    public @NonNull List<NamespacedKey> getRecipeNamespaceKeys() {
         return new ArrayList<>(this.recipes);
     }
 
     @Override
-    public Recipe getRecipe(NamespacedKey namespaceKey) {
+    public Recipe getRecipe(@NonNull NamespacedKey namespaceKey) {
         return this.datapack.getServer().getRecipe(namespaceKey);
     }
 }

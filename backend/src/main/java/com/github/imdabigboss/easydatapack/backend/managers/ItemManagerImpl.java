@@ -25,6 +25,7 @@ import org.bukkit.event.inventory.PrepareSmithingEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -60,12 +61,12 @@ public class ItemManagerImpl implements Listener, ItemManager {
     }
 
     @Override
-    public List<CustomItem> getCustomItems() {
+    public @NonNull List<CustomItem> getCustomItems() {
         return new ArrayList<>(this.items.values());
     }
 
     @Override
-    public CustomItem getCustomItem(String namespaceKey) {
+    public CustomItem getCustomItem(@NonNull String namespaceKey) {
         for (CustomItem item : this.items.values()) {
             if (item.getNamespaceKey().equals(namespaceKey)) {
                 return item;
@@ -76,24 +77,24 @@ public class ItemManagerImpl implements Listener, ItemManager {
     }
 
     @Override
-    public CustomItem getCustomItem(Integer customModelData) {
+    public CustomItem getCustomItem(int customModelData) {
         return this.items.get(customModelData);
     }
 
     @Override
-    public ItemStack getItemStack(String namespaceKey) {
+    public ItemStack getItemStack(@NonNull String namespaceKey) {
         CustomItem item = this.getCustomItem(namespaceKey);
         return item == null ? null : item.getItemStack();
     }
 
     @Override
-    public ItemStack getItemStack(Integer customModelData) {
+    public ItemStack getItemStack(int customModelData) {
         CustomItem item = this.getCustomItem(customModelData);
         return item == null ? null : item.getItemStack();
     }
 
     @Override
-    public boolean isCustomHat(ItemStack item) {
+    public boolean isCustomHat(@NonNull ItemStack item) {
         if (!item.hasItemMeta()) {
             return false;
         }

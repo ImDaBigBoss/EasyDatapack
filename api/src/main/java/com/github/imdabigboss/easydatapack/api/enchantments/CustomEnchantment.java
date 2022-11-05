@@ -15,7 +15,8 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,9 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+/**
+ * This class represents a custom enchantment.
+ */
 public class CustomEnchantment extends Enchantment {
     private final String name;
     private final String namespace;
@@ -63,32 +67,58 @@ public class CustomEnchantment extends Enchantment {
         this.eventListener = eventListener;
     }
 
+    /**
+     * Gets the name of the enchantment.
+     * @return the name of the enchantment
+     */
     @Override
-    public String getName() {
+    public @NonNull String getName() {
         return this.name;
     }
 
-    public String getNamespace() {
+    /**
+     * Gets the namespace key of the enchantment.
+     * @return the namespace key of the enchantment
+     */
+    public @NonNull String getNamespace() {
         return this.namespace;
     }
 
+    /**
+     * Gets the maximum level of the enchantment.
+     * @return the maximum level of the enchantment
+     */
     @Override
     public int getMaxLevel() {
         return this.maxLevel;
     }
 
+    /**
+     * Gets the starting level, or the minimum of the enchantment.
+     * @return the starting level of the enchantment
+     */
     @Override
     public int getStartLevel() {
         return this.startLevel;
     }
 
+    /**
+     * Checks if the enchantment conflicts with another.
+     * @param other the other enchantment to check
+     * @return true if the enchantment conflicts, false otherwise
+     */
     @Override
-    public boolean conflictsWith(Enchantment other) {
+    public boolean conflictsWith(@NonNull Enchantment other) {
         return this.conflictList.contains(other);
     }
 
+    /**
+     * Checks if the enchantment can be applied to an item.
+     * @param item the item to check
+     * @return true if the enchantment can be applied, false otherwise
+     */
     @Override
-    public boolean canEnchantItem(@NotNull ItemStack item) {
+    public boolean canEnchantItem(@NonNull ItemStack item) {
         if (item.getType() == Material.AIR) {
             return false;
         }
@@ -99,72 +129,134 @@ public class CustomEnchantment extends Enchantment {
         return this.canEnchantItem.test(item);
     }
 
+    /**
+     * Gets the item types that the enchantment can be applied to.
+     * @return the item types that the enchantment can be applied to
+     */
     @Override
-    public @NotNull EnchantmentTarget getItemTarget() {
+    public @NonNull EnchantmentTarget getItemTarget() {
         return this.enchantmentTarget;
     }
 
+    /**
+     * Gets if the enchantment is a treasure.
+     * @return true if the enchantment is a treasure, false otherwise
+     */
     @Override
     public boolean isTreasure() {
         return this.treasure;
     }
 
+    /**
+     * Gets if the enchantment is a curse.
+     * @return true if the enchantment is a curse, false otherwise
+     */
     @Override
     public boolean isCursed() {
         return this.cursed;
     }
 
+    /**
+     * Gets the enchantment's display name by level.
+     * @param i the level of the enchantment
+     * @return the enchantment's display name
+     */
     @Override
-    public @NotNull Component displayName(int i) {
+    public @NonNull Component displayName(int i) {
         return Component.text(this.name);
     }
 
+    /**
+     * Gets if the enchantment is tradeable.
+     * @return true if the enchantment is tradeable, false otherwise
+     */
     @Override
     public boolean isTradeable() {
         return this.tradeable;
     }
 
+    /**
+     * Gets if the enchantment is discoverable.
+     * @return true if the enchantment is discoverable, false otherwise
+     */
     @Override
     public boolean isDiscoverable() {
         return this.discoverable;
     }
 
+    /**
+     * Gets the enchantment's rarity.
+     * @return the enchantment's rarity
+     */
     @Override
-    public @NotNull EnchantmentRarity getRarity() {
+    public @NonNull EnchantmentRarity getRarity() {
         return this.rarity;
     }
 
+    /**
+     * Gets the encantment's damage increase by level and entity category.
+     * @param level the level of the enchantment
+     * @param entityCategory the entity category
+     * @return the damage increase
+     */
     @Override
-    public float getDamageIncrease(int level, @NotNull EntityCategory entityCategory) {
+    public float getDamageIncrease(int level, @NonNull EntityCategory entityCategory) {
         Float out = this.damageIncrease.apply(level, entityCategory);
         return out == null ? 0 : out;
     }
 
+    /**
+     * Gets the enchantment's active slots.
+     * @return an empty set
+     */
     @Override
-    public @NotNull Set<EquipmentSlot> getActiveSlots() {
+    public @NonNull Set<EquipmentSlot> getActiveSlots() {
         return Set.of();
     }
 
+    /**
+     * Gets the enchantment's translation key.
+     * @return the enchantment's translation key
+     */
     @Override
-    public @NotNull String translationKey() {
-        return "enchantment." + this.namespace + "." + this.name;
+    public @NonNull String translationKey() {
+        return "enchantment." + this.namespace;
     }
 
+    /**
+     * Gets the enchantment's anvil merge cost by level.
+     * @param level the level of the enchantment
+     * @return the anvil merge cost
+     */
     public int getAnvilMergeCost(int level) {
         Integer out = this.anvilMergeCost.apply(level);
         return out == null ? 0 : out;
     }
 
+    /**
+     * Gets the enchantment's trade cost by level.
+     * @param level the level of the enchantment
+     * @return the trade cost
+     */
     public int getTradeCost(int level) {
         Integer out = this.tradeCost.apply(level);
         return out == null ? 0 : out;
     }
 
-    public Class<? extends Listener> getEventListener() {
+    /**
+     * Gets the enchantment's event listener if it has one.
+     * @return the enchantment's event listener
+     */
+    public @Nullable Class<? extends Listener> getEventListener() {
         return this.eventListener;
     }
 
-    public String formatEnchantmentName(int level) {
+    /**
+     * Gets the formatted name of the enchantment by level. For example, "Sharpness V".
+     * @param level the level of the enchantment
+     * @return the formatted name of the enchantment
+     */
+    public @NonNull String formatEnchantmentName(int level) {
         if (this.getMaxLevel() == 1) {
             return this.getName();
         } else {
@@ -172,7 +264,12 @@ public class CustomEnchantment extends Enchantment {
         }
     }
 
-    public ItemStack getBook(int level) {
+    /**
+     * Creates an item stack of a book with the enchantment.
+     * @param level the level of the enchantment
+     * @return the item stack of the book
+     */
+    public @NonNull ItemStack getBook(int level) {
         ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
         ItemMeta meta = book.getItemMeta();
 
@@ -189,16 +286,23 @@ public class CustomEnchantment extends Enchantment {
         return book;
     }
 
-    public boolean hasEnchantment(ItemStack item) {
-        if (item == null) {
-            return false;
-        }
+    /**
+     * Checks if an item has the enchantment.
+     * @param item the item to check
+     * @return true if the item has the enchantment, false otherwise
+     */
+    public boolean hasEnchantment(@NonNull ItemStack item) {
         if (!item.hasItemMeta()) {
             return false;
         }
         return item.getItemMeta().hasEnchant(this);
     }
 
+    /**
+     * Gets the level of the enchantment on an item.
+     * @param item the item to check
+     * @return the level of the enchantment
+     */
     public int getEnchantmentLevel(ItemStack item) {
         if (!this.hasEnchantment(item)) {
             return 0;
@@ -206,6 +310,9 @@ public class CustomEnchantment extends Enchantment {
         return item.getItemMeta().getEnchantLevel(this);
     }
 
+    /**
+     * This class represents a builder for creating custom enchantments.
+     */
     public static class Builder {
         protected final String name;
         protected final String namespace;
@@ -225,74 +332,145 @@ public class CustomEnchantment extends Enchantment {
         protected Function<Integer, Integer> tradeCost = level -> 0;
         protected Class<? extends Listener> eventListener = null;
 
-        public Builder(String name, String namespace, Predicate<ItemStack> canEnchantItem, EnchantmentTarget enchantmentTarget) {
+        /**
+         * Creates a new builder for creating custom enchantments.
+         * @param name the name of the enchantment
+         * @param namespace the namespace of the enchantment, a name in snake_case
+         * @param canEnchantItem the predicate to check if an item can be enchanted
+         * @param enchantmentTarget the enchantment target
+         */
+        public Builder(@NonNull String name, @NonNull String namespace, @NonNull Predicate<ItemStack> canEnchantItem, @NonNull EnchantmentTarget enchantmentTarget) {
             this.name = name;
             this.namespace = namespace;
             this.canEnchantItem = canEnchantItem;
             this.enchantmentTarget = enchantmentTarget;
         }
 
-        public Builder maxLevel(int maxLevel) {
+        /**
+         * Sets the max level of the enchantment.
+         * @param maxLevel the max level of the enchantment
+         * @return the builder
+         */
+        public @NonNull Builder maxLevel(int maxLevel) {
             this.maxLevel = maxLevel;
             return this;
         }
 
-        public Builder startLevel(int startLevel) {
+        /**
+         * Sets the start level, or the minimum level of the enchantment.
+         * @param startLevel the start level of the enchantment
+         * @return the builder
+         */
+        public @NonNull Builder startLevel(int startLevel) {
             this.startLevel = startLevel;
             return this;
         }
 
-        public Builder addConflict(Enchantment... conflict) {
+        /**
+         * Adds a conflicting enchantment.
+         * @param conflict the conflicting enchantment
+         * @return the builder
+         */
+        public @NonNull Builder addConflict(Enchantment... conflict) {
             this.conflictList.addAll(List.of(conflict));
             return this;
         }
 
-        public Builder treasure(boolean treasure) {
+        /**
+         * Sets if the enchantment is a treasure.
+         * @param treasure true if the enchantment is treasure, false otherwise
+         * @return the builder
+         */
+        public @NonNull Builder treasure(boolean treasure) {
             this.treasure = treasure;
             return this;
         }
 
-        public Builder cursed(boolean cursed) {
+        /**
+         * Sets if the enchantment is a curse.
+         * @param cursed true if the enchantment is a curse, false otherwise
+         * @return the builder
+         */
+        public @NonNull Builder cursed(boolean cursed) {
             this.cursed = cursed;
             return this;
         }
 
-        public Builder tradeable(boolean tradeable) {
+        /**
+         * Sets if the enchantment is tradeable.
+         * @param tradeable true if the enchantment is tradeable, false otherwise
+         * @return the builder
+         */
+        public @NonNull Builder tradeable(boolean tradeable) {
             this.tradeable = tradeable;
             return this;
         }
 
-        public Builder discoverable(boolean discoverable) {
+        /**
+         * Sets if the enchantment is discoverable.
+         * @param discoverable true if the enchantment is discoverable, false otherwise
+         * @return the builder
+         */
+        public @NonNull Builder discoverable(boolean discoverable) {
             this.discoverable = discoverable;
             return this;
         }
 
-        public Builder rarity(EnchantmentRarity rarity) {
+        /**
+         * Sets the rarity of the enchantment.
+         * @param rarity the rarity of the enchantment
+         * @return the builder
+         */
+        public @NonNull Builder rarity(@NonNull EnchantmentRarity rarity) {
             this.rarity = rarity;
             return this;
         }
 
-        public Builder damageIncrease(BiFunction<Integer, EntityCategory, Float> damageIncrease) {
+        /**
+         * Sets the damage increase of the enchantment.
+         * @param damageIncrease the damage increase bi-function of the enchantment
+         * @return the builder
+         */
+        public @NonNull Builder damageIncrease(@NonNull BiFunction<Integer, EntityCategory, Float> damageIncrease) {
             this.damageIncrease = damageIncrease;
             return this;
         }
 
-        public Builder anvilMergeCost(Function<Integer, Integer> anvilMergeCost) {
+        /**
+         * Sets the anvil merge cost of the enchantment.
+         * @param anvilMergeCost the anvil merge cost function of the enchantment
+         * @return the builder
+         */
+        public @NonNull Builder anvilMergeCost(@NonNull Function<Integer, Integer> anvilMergeCost) {
             this.anvilMergeCost = anvilMergeCost;
             return this;
         }
 
-        public Builder tradeCost(Function<Integer, Integer> tradeCost) {
+        /**
+         * Sets the trade cost of the enchantment.
+         * @param tradeCost the trade cost function of the enchantment
+         * @return the builder
+         */
+        public @NonNull Builder tradeCost(@NonNull Function<Integer, Integer> tradeCost) {
             this.tradeCost = tradeCost;
             return this;
         }
 
-        public Builder eventListener(Class<? extends Listener> eventListener) {
+        /**
+         * Sets the event listener of the enchantment.
+         * @param eventListener the event listener class of the enchantment, or null if there is no event listener
+         * @return the builder
+         */
+        public @NonNull Builder eventListener(@Nullable Class<? extends Listener> eventListener) {
             this.eventListener = eventListener;
             return this;
         }
 
-        public CustomEnchantment build() {
+        /**
+         * Builds the enchantment.
+         * @return the enchantment
+         */
+        public @NonNull CustomEnchantment build() {
             return new CustomEnchantment(this.name, this.namespace, this.canEnchantItem, this.enchantmentTarget, this.maxLevel, this.startLevel, this.conflictList, this.treasure, this.cursed, this.tradeable, this.discoverable, this.rarity, this.damageIncrease, this.anvilMergeCost, this.tradeCost, this.eventListener);
         }
     }

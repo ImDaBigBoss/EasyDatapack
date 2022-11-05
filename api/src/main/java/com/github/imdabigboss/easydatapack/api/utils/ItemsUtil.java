@@ -1,32 +1,39 @@
 package com.github.imdabigboss.easydatapack.api.utils;
 
 import org.bukkit.inventory.ItemStack;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
+/**
+ * Some utilities for items.
+ */
 public class ItemsUtil {
-    public static boolean isItemATool(ItemStack item) {
-        if (item == null) {
-            return false;
-        }
+    /**
+     * Checks if an item is a tool
+     * @param item the item to check
+     * @return true if the item is a tool, false otherwise
+     */
+    public static boolean isItemATool(@NonNull ItemStack item) {
         String name = item.getType().toString();
-
         return name.endsWith("_SHOVEL") || name.endsWith("_PICKAXE") || name.endsWith("_AXE");
     }
 
-    public static boolean isItemASword(ItemStack item) {
-        if (item == null) {
-            return false;
-        }
+    /**
+     * Checks if an item is a sword
+     * @param item the item to check
+     * @return true if the item is a sword, false otherwise
+     */
+    public static boolean isItemASword(@NonNull ItemStack item) {
         String name = item.getType().toString();
-
         return name.endsWith("_SWORD");
     }
 
-    public static boolean isItemArmor(ItemStack item) {
-        if (item == null) {
-            return false;
-        }
+    /**
+     * Checks if an item is a piece of armor
+     * @param item the item to check
+     * @return true if the item is a piece of armor, false otherwise
+     */
+    public static boolean isItemArmor(@NonNull ItemStack item) {
         String name = item.getType().toString();
-
         return name.endsWith("_HELMET") || name.endsWith("_CHESTPLATE") || name.endsWith("_LEGGINGS") || name.endsWith("_BOOTS");
     }
 }

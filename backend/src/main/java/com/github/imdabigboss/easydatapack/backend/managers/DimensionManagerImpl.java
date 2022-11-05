@@ -18,6 +18,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,12 +59,12 @@ public class DimensionManagerImpl implements Listener, DimensionManager {
     }
 
     @Override
-    public CustomDimension getDimension(String name) {
+    public CustomDimension getDimension(@NonNull String name) {
         return dimensions.get(name);
     }
 
     @Override
-    public List<CustomDimension> getCustomDimensions() {
+    public @NonNull List<CustomDimension> getCustomDimensions() {
         return new ArrayList<>(this.dimensions.values());
     }
 

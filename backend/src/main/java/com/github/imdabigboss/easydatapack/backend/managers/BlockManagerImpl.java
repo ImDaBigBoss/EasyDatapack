@@ -25,6 +25,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.BoundingBox;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.*;
 
@@ -44,12 +45,12 @@ public class BlockManagerImpl implements Listener, BlockManager {
     }
 
     @Override
-    public List<CustomBlock> getCustomBlocks() {
+    public @NonNull List<CustomBlock> getCustomBlocks() {
         return new ArrayList<>(this.blocks.values());
     }
 
     @Override
-    public CustomBlock blockToCustomBlock(Block block) {
+    public CustomBlock blockToCustomBlock(@NonNull Block block) {
         MultipleFacing multipleFacing = (MultipleFacing) block.getBlockData();
 
         for (CustomBlock customBlock : this.blocks.values()) {

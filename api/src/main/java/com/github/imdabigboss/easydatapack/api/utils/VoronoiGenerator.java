@@ -1,11 +1,11 @@
-/*
- * This code was found at https://bukkit.org/threads/wgen-voronoi-noise.161319/
- */
-
 package com.github.imdabigboss.easydatapack.api.utils;
 
 import java.util.Random;
 
+/**
+ * This code was found at https://bukkit.org/threads/wgen-voronoi-noise.161319/ it is a utility that you can use to make
+ * custom terrain in a potential dimension.
+ */
 public class VoronoiGenerator {
     private static final double SQRT_2 = 1.4142135623730950488;
     private static final double SQRT_3 = 1.7320508075688772935;

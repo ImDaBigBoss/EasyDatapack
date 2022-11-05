@@ -3,6 +3,7 @@ package com.github.imdabigboss.easydatapack.backend.utils;
 import com.github.imdabigboss.easydatapack.api.utils.YmlConfig;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class YmlConfigImpl implements YmlConfig {
     private final Plugin plugin;
@@ -12,7 +13,7 @@ public class YmlConfigImpl implements YmlConfig {
     }
 
     @Override
-    public FileConfiguration getConfig() {
+    public @NonNull FileConfiguration getConfig() {
         return this.plugin.getConfig();
     }
 
