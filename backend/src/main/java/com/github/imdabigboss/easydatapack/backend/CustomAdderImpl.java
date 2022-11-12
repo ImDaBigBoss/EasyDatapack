@@ -16,7 +16,7 @@ import org.geysermc.geyser.api.item.custom.CustomItemData;
 import org.geysermc.geyser.api.item.custom.CustomItemOptions;
 
 public class CustomAdderImpl extends CustomAdder {
-    private final GeyserDefineCustomItemsEvent event;
+    private final Object event;
 
     private final BlockManagerImpl blockManager;
     private final DimensionManagerImpl dimensionManager;
@@ -24,7 +24,7 @@ public class CustomAdderImpl extends CustomAdder {
     private final ItemManagerImpl itemManager;
     private final RecipeManagerImpl recipeManager;
 
-    public CustomAdderImpl(EasyDatapack datapack, GeyserDefineCustomItemsEvent event) {
+    public CustomAdderImpl(EasyDatapack datapack, Object event) {
         this.event = event;
 
         this.blockManager = datapack.getBlockManager();
@@ -64,7 +64,7 @@ public class CustomAdderImpl extends CustomAdder {
                     .displayName(item.getName())
                     .build();
 
-            this.event.register(item.getBaseMaterial().getKey().toString(), data);
+            ((GeyserDefineCustomItemsEvent) this.event).register(item.getBaseMaterial().getKey().toString(), data);
         }
     }
 

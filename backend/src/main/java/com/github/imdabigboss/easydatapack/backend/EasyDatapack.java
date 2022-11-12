@@ -3,27 +3,20 @@ package com.github.imdabigboss.easydatapack.backend;
 import com.github.imdabigboss.easydatapack.api.CustomAdder;
 import com.github.imdabigboss.easydatapack.api.EasyDatapackAPI;
 import com.github.imdabigboss.easydatapack.api.EasyDatapackBase;
-import com.github.imdabigboss.easydatapack.api.exceptions.CustomRecipeException;
 import com.github.imdabigboss.easydatapack.api.utils.YmlConfig;
 import com.github.imdabigboss.easydatapack.backend.managers.*;
+import com.github.imdabigboss.easydatapack.backend.registrar.*;
 import com.github.imdabigboss.easydatapack.backend.utils.YmlConfigImpl;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.geysermc.api.Geyser;
-import org.geysermc.event.subscribe.Subscribe;
 import org.geysermc.geyser.api.GeyserApi;
-import org.geysermc.geyser.api.event.EventRegistrar;
-import org.geysermc.geyser.api.event.lifecycle.GeyserDefineCustomItemsEvent;
-import org.geysermc.geyser.api.event.lifecycle.GeyserPostInitializeEvent;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
-public class EasyDatapack extends JavaPlugin implements EasyDatapackBase, EventRegistrar {
-    private static final Logger log = Logger.getLogger("Minecraft");
+public class EasyDatapack extends JavaPlugin implements EasyDatapackBase {
+    private Logger log;
     private YmlConfig config;
 
     private RecipeManagerImpl recipeManager;
@@ -33,14 +26,13 @@ public class EasyDatapack extends JavaPlugin implements EasyDatapackBase, EventR
     private ItemManagerImpl itemManager;
     private MapManagerImpl mapManager;
 
-    private GeyserApi geyserApi = null;
-
-    private List<Consumer<CustomAdder>> customAdders = new ArrayList<>();
+    private GenericRegistrar componentRegistrar = null;
 
     @Override
     public void onLoad() {
         EasyDatapackAPI.set(this);
 
+        this.log = this.getLogger();
         this.config = new YmlConfigImpl(this);
         this.config.saveConfig();
 
@@ -53,13 +45,17 @@ public class EasyDatapack extends JavaPlugin implements EasyDatapackBase, EventR
 
         if (this.getServer().getPluginManager().getPlugin("Geyser-Spigot") != null) {
             try {
-                this.geyserApi = GeyserApi.api();
-                this.geyserApi.eventBus().register(this, this);
-                log.info(String.format("[%s] Detected Geyser, items will be registered with it.", getDescription().getName()));
-            } catch (Exception ignored) {
+                GeyserApi geyserApi = GeyserApi.api();
+                this.componentRegistrar = new GeyserRegistrar(this, geyserApi);
+                this.log.info("Detected Geyser, items will be registered with it.");
+            } catch (Exception e) {
+                this.componentRegistrar = null;
             }
         }
 
+        if (this.componentRegistrar == null) {
+            this.componentRegistrar = new DefaultRegistrar(this);
+        }
     }
 
     @Override
@@ -71,63 +67,19 @@ public class EasyDatapack extends JavaPlugin implements EasyDatapackBase, EventR
         pluginManager.registerEvents(this.itemManager, this);
         pluginManager.registerEvents(this.mapManager, this);
 
-        if (this.geyserApi == null) {
-            this.registerCustomComponents(null);
-            this.finalizeRegistration();
-        }
-
-        log.info(String.format("[%s] EasyDatapack successfully enabled.", getDescription().getName()));
+        this.componentRegistrar.onEnable();
+        log.info("EasyDatapack successfully enabled.");
     }
 
     @Override
     public void onDisable() {
-        try {
-            this.recipeManager.unregisterAllRecipes();
-        } catch (CustomRecipeException e) {
-            e.printStackTrace();
-        }
-
-        this.enchantmentManager.unregisterEnchantments();
-    }
-
-    @Subscribe
-    public void onGeyserDefineCustomItemsEvent(GeyserDefineCustomItemsEvent event) {
-        this.registerCustomComponents(event);
-    }
-
-    @Subscribe
-    public void onGeyserPostInitializeEvent(GeyserPostInitializeEvent event) {
-        this.finalizeRegistration();
-    }
-
-    private void registerCustomComponents(GeyserDefineCustomItemsEvent event) {
-        log.info(String.format("[%s] Registering custom components.", getDescription().getName()));
-
-        CustomAdderImpl customAdder = new CustomAdderImpl(this, event);
-        for (Consumer<CustomAdder> customAdderConsumer : this.customAdders) {
-            customAdderConsumer.accept(customAdder);
-        }
-
-        this.customAdders = null;
-    }
-
-    private void finalizeRegistration() {
-        this.enchantmentManager.registerEventListeners();
-        this.itemManager.registerEventListeners();
-
-        log.info(String.format("[%s] Creating custom dimension worlds.", getDescription().getName()));
-        this.dimensionManager.createWorlds();
-
-        log.info(String.format("[%s] Custom component registration complete!", getDescription().getName()));
+        this.componentRegistrar.onDisable();
+        this.log.info("EasyDatapack successfully disabled.");
     }
 
     @Override
     public void registerCustomAdder(@NonNull Consumer<CustomAdder> customAdder) {
-        if (this.customAdders == null) {
-            throw new RuntimeException("Custom adders can no longer be registered, the plugin has already registered all the custom components");
-        }
-
-        this.customAdders.add(customAdder);
+        this.componentRegistrar.registerCustomAdder(customAdder);
     }
 
     @Override
