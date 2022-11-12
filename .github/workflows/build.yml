@@ -28,7 +28,7 @@ jobs:
           name: EasyDatapack
           path: backend/target/EasyDatapack.jar
       - name: Generate javadocs
-        run: mvn org.apache.maven.plugins:maven-javadoc-plugin:3.4.0:aggregate > /dev/null
+        run: set -e && EXIT_CODE=0 && mvn org.apache.maven.plugins:maven-javadoc-plugin:3.4.0:aggregate || EXIT_CODE=$? && echo $EXIT_CODE
         shell: bash
       - name: Deploy javadocs
         uses: JamesIves/github-pages-deploy-action@v4.4.1
