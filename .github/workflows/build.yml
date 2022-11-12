@@ -27,10 +27,14 @@ jobs:
         with:
           name: EasyDatapack
           path: backend/target/EasyDatapack.jar
-      - name: Deploy JavaDocs
-        uses: MathieuSoysal/Javadoc-publisher.yml@v2.0.4
+      - name: Generate javadocs
+        run: mvn org.apache.maven.plugins:maven-javadoc-plugin:3.4.0:aggregate > /dev/null
+        shell: bash
+      - name: Deploy javadocs
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          javadoc-branch: javadoc
-          java-version: '16'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages
+          clean: true
+          folder: target/site/apidocs
           target-folder: javadoc
