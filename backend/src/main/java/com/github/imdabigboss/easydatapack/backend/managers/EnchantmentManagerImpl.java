@@ -3,6 +3,7 @@ package com.github.imdabigboss.easydatapack.backend.managers;
 import com.github.imdabigboss.easydatapack.api.enchantments.CustomEnchantment;
 import com.github.imdabigboss.easydatapack.api.exceptions.CustomEnchantmentException;
 import com.github.imdabigboss.easydatapack.api.items.CustomItem;
+import com.github.imdabigboss.easydatapack.api.items.CustomToolItem;
 import com.github.imdabigboss.easydatapack.api.managers.EnchantmentManager;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
 import com.github.imdabigboss.easydatapack.backend.utils.LoreUtil;
@@ -231,6 +232,10 @@ public class EnchantmentManagerImpl implements Listener, EnchantmentManager {
         ItemStack second = inventory.getItem(1);
         ItemStack result = event.getResult();
 
+        if (result != null) { //Just do this anyway because the anvil removes the color char making the name strange
+            this.reformatItemNameColours(result);
+        }
+
         if (!this.isEnchantable(first) || first.getAmount() > 1) {
             return;
         }
@@ -310,7 +315,9 @@ public class EnchantmentManagerImpl implements Listener, EnchantmentManager {
             if (enchant instanceof CustomEnchantment customEnchantment) {
                 repairCost += customEnchantment.getAnvilMergeCost(level);
             } else {
-                repairCost += level; //TODO: I don't know the math for this...
+                if (customFirst instanceof CustomToolItem toolItem) {
+                    CustomToolItem.formatToolPropertiesLore(result, toolItem);
+                }
             }
         }
 

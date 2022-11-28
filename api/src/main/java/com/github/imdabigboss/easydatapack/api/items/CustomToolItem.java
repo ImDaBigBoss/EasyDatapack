@@ -12,6 +12,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,33 +41,9 @@ public class CustomToolItem extends CustomItem {
         itemMeta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE, new AttributeModifier(UUID.randomUUID(), "generic.attack_damage", attackDamage - 0.5, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND));
         itemMeta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, new AttributeModifier(UUID.randomUUID(), "generic.attack_speed", (4 - attackSpeed) * -1, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND));
 
-        if (!hideFlags) {
-            itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-
-            String stringAttackDamage = " " + attackDamage + "";
-            if (stringAttackDamage.endsWith(".0")) {
-                stringAttackDamage = stringAttackDamage.substring(0, stringAttackDamage.length() - 2);
-            }
-            String stringAttackSpeed = " " + attackSpeed + "";
-            if (stringAttackSpeed.endsWith(".0")) {
-                stringAttackSpeed = stringAttackSpeed.substring(0, stringAttackSpeed.length() - 2);
-            }
-
-            List<Component> loreList;
-            if (itemMeta.lore() != null) {
-                loreList = itemMeta.lore();
-            } else {
-                loreList = new ArrayList<>();
-            }
-            loreList.add(Component.text(""));
-            loreList.add(Component.text(ChatColor.GRAY + "When in Main Hand:"));
-            loreList.add(Component.text(ChatColor.DARK_GREEN + stringAttackDamage + " Attack Damage"));
-            loreList.add(Component.text(ChatColor.DARK_GREEN + stringAttackSpeed + " Attack Speed"));
-
-            itemMeta.lore(loreList);
-        }
-
         this.itemStack.setItemMeta(itemMeta);
+
+        formatToolPropertiesLore(this.itemStack, this);
     }
 
     /**
@@ -99,6 +76,63 @@ public class CustomToolItem extends CustomItem {
      */
     public @Nullable Consumer<BlockBreakEvent> getPlayerBreakBlockEvent() {
         return playerBreakBlockEvent;
+    }
+
+    public static void formatToolPropertiesLore(ItemStack itemStack, CustomToolItem customItem) {
+        if (!itemStack.hasItemMeta()) {
+            return;
+        }
+
+        if (!customItem.isHideFlags()) {
+            ItemMeta itemMeta = itemStack.getItemMeta();
+
+            itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+
+            double sharpnessExtra = 0;
+            if (itemMeta.hasEnchant(Enchantment.DAMAGE_ALL)) {
+                int level = itemMeta.getEnchantLevel(Enchantment.DAMAGE_ALL);
+                sharpnessExtra = 0.5 * Math.max(0, level - 1) + 1.0;
+            }
+
+            String stringAttackDamage = " " + (customItem.getAttackDamage() + sharpnessExtra);
+            if (stringAttackDamage.endsWith(".0")) {
+                stringAttackDamage = stringAttackDamage.substring(0, stringAttackDamage.length() - 2);
+            }
+            String stringAttackSpeed = " " + customItem.getAttackSpeed();
+            if (stringAttackSpeed.endsWith(".0")) {
+                stringAttackSpeed = stringAttackSpeed.substring(0, stringAttackSpeed.length() - 2);
+            }
+
+            List<String> loreList;
+            if (itemMeta.lore() != null) {
+                loreList = itemMeta.getLore();
+            } else {
+                loreList = new ArrayList<>();
+            }
+
+            String whenInMainHand = ChatColor.GRAY + "When in Main Hand:";
+            String attackDamage = ChatColor.DARK_GREEN + stringAttackDamage + " Attack Damage";
+            String attackSpeed = ChatColor.DARK_GREEN + stringAttackSpeed + " Attack Speed";
+
+            if (loreList.contains(whenInMainHand)) {
+                int whenInMainHandIndex = loreList.indexOf(whenInMainHand);
+
+                loreList.remove(loreList.indexOf(whenInMainHand) + 1);
+                loreList.remove(loreList.indexOf(whenInMainHand) + 1);
+
+                loreList.add(whenInMainHandIndex + 1, attackDamage);
+                loreList.add(whenInMainHandIndex + 2, attackSpeed);
+            } else {
+                loreList.add("");
+                loreList.add(whenInMainHand);
+                loreList.add(attackDamage);
+                loreList.add(attackSpeed);
+            }
+
+            itemMeta.setLore(loreList);
+
+            itemStack.setItemMeta(itemMeta);
+        }
     }
 
     /**
