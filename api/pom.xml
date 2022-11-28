@@ -6,7 +6,7 @@
 
   <groupId>com.github.imdabigboss.easydatapack</groupId>
   <artifactId>api</artifactId>
-  <version>1.0</version>
+  <version>1.1</version>
   <packaging>jar</packaging>
 
   <name>EasyDatapack-API</name>
@@ -14,7 +14,7 @@
   <parent>
     <groupId>com.github.imdabigboss</groupId>
     <artifactId>easydatapack</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
   </parent>
 
   <properties>

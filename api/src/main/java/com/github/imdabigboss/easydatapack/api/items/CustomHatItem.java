@@ -17,8 +17,8 @@ import java.util.function.Consumer;
  * This class represents a custom item that is a hat, and thus can be worn.
  */
 public class CustomHatItem extends CustomItem {
-    private CustomHatItem(int customModelData, @NonNull String namespaceKey, @NonNull String name, @NonNull Material baseMaterial, boolean unbreakable, boolean hideFlags, @Nullable Class<? extends Listener> eventListener, @Nullable Consumer<PlayerInteractEvent> itemUseEvent, boolean spacingBeforeLore, @Nullable String[] lore, @NonNull Map<Attribute, List<AttributeModifier>> attributeModifiers, @NonNull Map<Enchantment, Integer> enchantments) {
-        super(customModelData, namespaceKey, name, baseMaterial, unbreakable, hideFlags, false, eventListener, itemUseEvent, spacingBeforeLore, lore, attributeModifiers, enchantments);
+    private CustomHatItem(int customModelData, @NonNull String namespaceKey, @NonNull String name, @NonNull Material baseMaterial, boolean unbreakable, boolean hideFlags, @Nullable Class<? extends Listener> eventListener, @Nullable Consumer<PlayerInteractEvent> itemUseEvent, boolean spacingBeforeLore, @Nullable String[] lore, @NonNull Map<Attribute, List<AttributeModifier>> attributeModifiers, @NonNull Map<Enchantment, Integer> enchantments, @NonNull List<Enchantment> allowedEnchantments, @NonNull List<Enchantment> forbiddenEnchantments) {
+        super(customModelData, namespaceKey, name, baseMaterial, unbreakable, hideFlags, false, eventListener, itemUseEvent, spacingBeforeLore, lore, attributeModifiers, enchantments, allowedEnchantments, forbiddenEnchantments);
     }
 
     /**
@@ -42,7 +42,7 @@ public class CustomHatItem extends CustomItem {
          */
         @Override
         public @NonNull CustomHatItem build() {
-            return new CustomHatItem(this.customModelData, this.namespaceKey, this.name, this.baseMaterial, this.unbreakable, this.hideFlags, this.eventListener, this.itemUseEvent, this.spacingBeforeLore, this.lore, this.attributeModifiers, this.enchantments);
+            return new CustomHatItem(this.customModelData, this.namespaceKey, this.name, this.baseMaterial, this.unbreakable, this.hideFlags, this.eventListener, this.itemUseEvent, this.spacingBeforeLore, this.lore, this.attributeModifiers, this.enchantments, this.allowedEnchantments, this.forbiddenEnchantments);
         }
     }
 }

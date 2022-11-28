@@ -1,7 +1,9 @@
 package com.github.imdabigboss.easydatapack.api.items;
 
 import com.github.imdabigboss.easydatapack.api.EasyDatapackAPI;
+import com.github.imdabigboss.easydatapack.api.exceptions.CustomItemException;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.util.TriState;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -37,12 +39,14 @@ public class CustomItem {
     private final Consumer<PlayerInteractEvent> itemUseEvent;
     private final boolean spacingBeforeLore;
     private final String[] lore;
-    private final AttributeInformation[] attributeModifiers; //TODO: use arrays
+    private final AttributeInformation[] attributeModifiers;
     private final EnchantmentInformation[] enchantments;
+    private final Enchantment[] allowedEnchantments;
+    private final Enchantment[] forbiddenEnchantments;
 
     protected ItemStack itemStack;
 
-    protected CustomItem(int customModelData, @NonNull String namespaceKey, @NonNull String name, @NonNull Material baseMaterial, boolean unbreakable, boolean hideFlags, boolean newItem, @Nullable Class<? extends Listener> eventListener, @Nullable Consumer<PlayerInteractEvent> itemUseEvent, boolean spacingBeforeLore, @Nullable String[] lore, @NonNull Map<Attribute, List<AttributeModifier>> attributeModifiers, @NonNull Map<Enchantment, Integer> enchantments) {
+    protected CustomItem(int customModelData, @NonNull String namespaceKey, @NonNull String name, @NonNull Material baseMaterial, boolean unbreakable, boolean hideFlags, boolean newItem, @Nullable Class<? extends Listener> eventListener, @Nullable Consumer<PlayerInteractEvent> itemUseEvent, boolean spacingBeforeLore, @Nullable String[] lore, @NonNull Map<Attribute, List<AttributeModifier>> attributeModifiers, @NonNull Map<Enchantment, Integer> enchantments, @NonNull List<Enchantment> allowedEnchantments, @NonNull List<Enchantment> forbiddenEnchantments) {
         this.customModelData = customModelData;
         this.namespaceKey = namespaceKey;
         this.name = name;
@@ -102,6 +106,9 @@ public class CustomItem {
         for (EnchantmentInformation entry : this.enchantments) {
             itemMeta.addEnchant(entry.getEnchantment(), entry.getLevel(), true);
         }
+
+        this.allowedEnchantments = allowedEnchantments.toArray(new Enchantment[0]);
+        this.forbiddenEnchantments = forbiddenEnchantments.toArray(new Enchantment[0]);
 
         this.itemStack.setItemMeta(itemMeta);
     }
@@ -211,6 +218,38 @@ public class CustomItem {
     }
 
     /**
+     * Gets a list of enchantments that can be applied to the item, this can be used if the base material doesn't allow
+     * the enchantment by default.
+     * @return a list of enchantments that can be applied to the item
+     */
+    public @Nullable Enchantment[] getAllowedEnchantments() {
+        return this.allowedEnchantments;
+    }
+
+    /**
+     * Gets a list of enchantments that can't be applied to the item, this can be used if the base material allows
+     * the enchantment by default.
+     * @return a list of enchantments that can't be applied to the item
+     */
+    public @Nullable Enchantment[] getForbiddenEnchantments() {
+        return this.forbiddenEnchantments;
+    }
+
+    public @NonNull TriState canEnchant(@NonNull Enchantment enchantment) {
+        for (Enchantment allowedEnchantment : this.allowedEnchantments) {
+            if (allowedEnchantment.equals(enchantment)) {
+                return TriState.TRUE;
+            }
+        }
+        for (Enchantment forbiddenEnchantment : this.forbiddenEnchantments) {
+            if (forbiddenEnchantment.equals(enchantment)) {
+                return TriState.FALSE;
+            }
+        }
+        return TriState.NOT_SET;
+    }
+
+    /**
      * Gets the item stack of the item.
      * @return the item stack of the item
      */
@@ -288,6 +327,8 @@ public class CustomItem {
         protected String[] lore = null;
         protected Map<Attribute, List<AttributeModifier>> attributeModifiers = new HashMap<>();
         protected Map<Enchantment, Integer> enchantments = new HashMap<>();
+        protected List<Enchantment> allowedEnchantments = new ArrayList<>();
+        protected List<Enchantment> forbiddenEnchantments = new ArrayList<>();
 
         /**
          * Creates a new item builder.
@@ -403,11 +444,45 @@ public class CustomItem {
         }
 
         /**
+         * Adds an allowed enchantment to the item, this can be used if the base material doesn't allow the enchantment
+         * by default.
+         * @param enchantments the enchantments
+         * @return the builder
+         */
+        public @NonNull Builder allowedEnchantment(@NonNull Enchantment... enchantments) throws CustomItemException {
+            for (Enchantment enchantment : enchantments) {
+                if (this.forbiddenEnchantments.contains(enchantment)) {
+                    throw new CustomItemException(enchantment.getKey().asString() + " can't be both allowed and forbidden");
+                }
+
+                this.allowedEnchantments.add(enchantment);
+            }
+            return this;
+        }
+
+        /**
+         * Adds a forbidden enchantment to the item, this can be used if the base material allows the enchantment
+         * by default.
+         * @param enchantments the enchantments
+         * @return the builder
+         */
+        public @NonNull Builder forbiddenEnchantment(@NonNull Enchantment... enchantments) throws CustomItemException {
+            for (Enchantment enchantment : enchantments) {
+                if (this.allowedEnchantments.contains(enchantment)) {
+                    throw new CustomItemException(enchantment.getKey().asString() + " can't be both allowed and forbidden");
+                }
+
+                this.forbiddenEnchantments.add(enchantment);
+            }
+            return this;
+        }
+
+        /**
          * Builds the item.
          * @return the item
          */
         public @NonNull CustomItem build() {
-            return new CustomItem(this.customModelData, this.namespaceKey, this.name, this.baseMaterial, this.unbreakable, this.hideFlags, this.newItem, this.eventListener, this.itemUseEvent, this.spacingBeforeLore, this.lore, this.attributeModifiers, this.enchantments);
+            return new CustomItem(this.customModelData, this.namespaceKey, this.name, this.baseMaterial, this.unbreakable, this.hideFlags, this.newItem, this.eventListener, this.itemUseEvent, this.spacingBeforeLore, this.lore, this.attributeModifiers, this.enchantments, this.allowedEnchantments, this.forbiddenEnchantments);
         }
     }
 }

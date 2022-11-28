@@ -26,8 +26,7 @@ public interface EnchantmentManager {
     /**
      * This is used if an item is crafted with, or put into something like an anvil. We are removing the colour codes from
      * the raw name.
-     * @param original the original item
      * @param result the result item that needs its name reformatting
      */
-    void reformatItemNameColours(@NonNull ItemStack original, @NonNull ItemStack result);
+    void reformatItemNameColours(@NonNull ItemStack result);
 }

@@ -28,8 +28,8 @@ public class CustomToolItem extends CustomItem {
     private final Consumer<EntityDamageByEntityEvent> playerHitEntityEvent;
     private final Consumer<BlockBreakEvent> playerBreakBlockEvent;
 
-    private CustomToolItem(int customModelData, @NonNull String namespaceKey, @NonNull String name, @NonNull Material baseMaterial, boolean unbreakable, boolean hideFlags, double attackDamage, double attackSpeed, @Nullable Class<? extends Listener> eventListener, @Nullable Consumer<PlayerInteractEvent> itemUseEvent, @Nullable Consumer<EntityDamageByEntityEvent> playerHitEntityEvent, @Nullable Consumer<BlockBreakEvent> playerBreakBlockEvent, boolean spacingBeforeLore, @Nullable String[] lore, @NonNull Map<Attribute, List<AttributeModifier>> attributeModifiers, @NonNull Map<Enchantment, Integer> enchantments) {
-        super(customModelData, namespaceKey, name, baseMaterial, unbreakable, hideFlags, true, eventListener, itemUseEvent, spacingBeforeLore, lore, attributeModifiers, enchantments);
+    private CustomToolItem(int customModelData, @NonNull String namespaceKey, @NonNull String name, @NonNull Material baseMaterial, boolean unbreakable, boolean hideFlags, double attackDamage, double attackSpeed, @Nullable Class<? extends Listener> eventListener, @Nullable Consumer<PlayerInteractEvent> itemUseEvent, @Nullable Consumer<EntityDamageByEntityEvent> playerHitEntityEvent, @Nullable Consumer<BlockBreakEvent> playerBreakBlockEvent, boolean spacingBeforeLore, @Nullable String[] lore, @NonNull Map<Attribute, List<AttributeModifier>> attributeModifiers, @NonNull Map<Enchantment, Integer> enchantments, @NonNull List<Enchantment> allowedEnchantments, @NonNull List<Enchantment> forbiddenEnchantments) {
+        super(customModelData, namespaceKey, name, baseMaterial, unbreakable, hideFlags, true, eventListener, itemUseEvent, spacingBeforeLore, lore, attributeModifiers, enchantments, allowedEnchantments, forbiddenEnchantments);
 
         this.attackDamage = attackDamage;
         this.attackSpeed = attackSpeed;
@@ -70,8 +70,8 @@ public class CustomToolItem extends CustomItem {
     }
 
     /**
-     * Gets the attack damage of the tool.
-     * @return the attack damage of the tool
+     * Gets the attack damage that the tool deals.
+     * @return the attack damage that the tool deals
      */
     public double getAttackDamage() {
         return attackDamage;
@@ -153,7 +153,7 @@ public class CustomToolItem extends CustomItem {
          */
         @Override
         public @NonNull CustomToolItem build() {
-            return new CustomToolItem(this.customModelData, this.namespaceKey, this.name, this.baseMaterial, this.unbreakable, this.hideFlags, this.attackDamage, this.attackSpeed, this.eventListener, this.itemUseEvent, this.playerHitEntityEvent, this.playerBreakBlockEvent, this.spacingBeforeLore, this.lore, this.attributeModifiers, this.enchantments);
+            return new CustomToolItem(this.customModelData, this.namespaceKey, this.name, this.baseMaterial, this.unbreakable, this.hideFlags, this.attackDamage, this.attackSpeed, this.eventListener, this.itemUseEvent, this.playerHitEntityEvent, this.playerBreakBlockEvent, this.spacingBeforeLore, this.lore, this.attributeModifiers, this.enchantments, this.allowedEnchantments, this.forbiddenEnchantments);
         }
     }
 }

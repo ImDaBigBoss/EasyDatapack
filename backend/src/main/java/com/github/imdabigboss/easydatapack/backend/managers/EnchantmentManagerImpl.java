@@ -2,9 +2,11 @@ package com.github.imdabigboss.easydatapack.backend.managers;
 
 import com.github.imdabigboss.easydatapack.api.enchantments.CustomEnchantment;
 import com.github.imdabigboss.easydatapack.api.exceptions.CustomEnchantmentException;
+import com.github.imdabigboss.easydatapack.api.items.CustomItem;
 import com.github.imdabigboss.easydatapack.api.managers.EnchantmentManager;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
 import com.github.imdabigboss.easydatapack.backend.utils.LoreUtil;
+import net.kyori.adventure.util.TriState;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -103,40 +105,16 @@ public class EnchantmentManagerImpl implements Listener, EnchantmentManager {
     }
 
     @Override
-    public void reformatItemNameColours(@NonNull ItemStack original, @NonNull ItemStack result) {
-        if (!original.hasItemMeta() || !result.hasItemMeta()) {
+    public void reformatItemNameColours(@NonNull ItemStack result) {
+        if (!result.hasItemMeta()) {
             return;
         }
-        ItemMeta originalMeta = original.getItemMeta();
+
         ItemMeta resultMeta = result.getItemMeta();
 
-        if (!originalMeta.hasDisplayName()) {
-            return;
-        }
+        String finalName = ChatColor.stripColor(resultMeta.getDisplayName());
+        resultMeta.setDisplayName(finalName);
 
-        String originalName = resultMeta.getDisplayName();
-
-        String name;
-        if (resultMeta.hasDisplayName()) {
-            String tmpName = originalName;
-            name = resultMeta.getDisplayName();
-
-            while (tmpName.contains(ChatColor.COLOR_CHAR + "")) {
-                int index = tmpName.indexOf(ChatColor.COLOR_CHAR + "");
-
-                if (index == 0) {
-                    tmpName = tmpName.substring(2);
-                    name = name.substring(1);
-                } else {
-                    tmpName = tmpName.substring(0, index) + name.substring(index + 2);
-                    name = name.substring(0, index) + name.substring(index + 1);
-                }
-            }
-        } else {
-            name = ChatColor.stripColor(originalName);
-        }
-
-        resultMeta.setDisplayName(name);
         result.setItemMeta(resultMeta);
     }
 
@@ -145,7 +123,7 @@ public class EnchantmentManagerImpl implements Listener, EnchantmentManager {
         return new ArrayList<>(enchantments.values());
     }
 
-    private boolean enchantItemStack(ItemStack item, CustomEnchantment enchantment, int level, boolean force) {
+    private boolean enchantItemStack(ItemStack item, Enchantment enchantment, int level, boolean force) {
         if (item == null) {
             return false;
         }
@@ -175,7 +153,7 @@ public class EnchantmentManagerImpl implements Listener, EnchantmentManager {
         return true;
     }
 
-    private void removeEnchantItemStack(ItemStack item, CustomEnchantment enchantment) {
+    private void removeEnchantItemStack(ItemStack item, Enchantment enchantment) {
         if (item == null || !item.hasItemMeta()) {
             return;
         }
@@ -253,7 +231,7 @@ public class EnchantmentManagerImpl implements Listener, EnchantmentManager {
         ItemStack second = inventory.getItem(1);
         ItemStack result = event.getResult();
 
-        if (first == null || !this.isEnchantable(first) || first.getAmount() > 1) {
+        if (!this.isEnchantable(first) || first.getAmount() > 1) {
             return;
         }
 
@@ -264,7 +242,7 @@ public class EnchantmentManagerImpl implements Listener, EnchantmentManager {
                 this.enchantItemStack(newResult, hasEach, hasLevel, true);
             });
             this.updateItemLoreEnchants(newResult);
-            this.reformatItemNameColours(first, newResult);
+            this.reformatItemNameColours(newResult);
 
             event.setResult(newResult);
             return;
@@ -282,36 +260,63 @@ public class EnchantmentManagerImpl implements Listener, EnchantmentManager {
             result = first.clone();
         }
 
-        Map<CustomEnchantment, Integer> customEnchants = this.getItemCustomEnchants(first);
+        CustomItem customFirst = null;
+        if (first.hasItemMeta() && first.getItemMeta().hasCustomModelData()) {
+            customFirst = this.datapack.getItemManager().getCustomItem(first.getItemMeta().getCustomModelData());
+        }
+
+        Map<Enchantment, Integer> existingEnchantments = this.getItemEnchants(first);
+        Map<Enchantment, Integer> appliedEnchantments = new HashMap<>();
+        List<Enchantment> forcedEnchantments = new ArrayList<>();
         int repairCost = inventory.getRepairCost();
 
         if (second.getType() == Material.ENCHANTED_BOOK || second.getType() == first.getType()) {
-            for (Map.Entry<CustomEnchantment, Integer> en : this.getItemCustomEnchants(second).entrySet()) {
-                if (customEnchants.containsKey(en.getKey())) {
-                    int oldLevel = customEnchants.get(en.getKey());
-                    if (oldLevel == en.getValue()) {
-                        customEnchants.put(en.getKey(), oldLevel + 1);
+            for (Map.Entry<Enchantment, Integer> en : this.getItemEnchants(second).entrySet()) {
+                if (en.getKey() instanceof CustomEnchantment customEnchantment) {
+                    if (existingEnchantments.containsKey(en.getKey())) {
+                        int oldLevel = existingEnchantments.get(en.getKey());
+                        if (oldLevel == en.getValue()) {
+                            appliedEnchantments.put(customEnchantment, oldLevel + 1);
+                        } else {
+                            appliedEnchantments.put(customEnchantment, Math.max(oldLevel, en.getValue()));
+                        }
                     } else {
-                        customEnchants.replace(en.getKey(), Math.max(oldLevel, en.getValue()));
+                        appliedEnchantments.put(customEnchantment, en.getValue());
                     }
-                } else {
-                    customEnchants.put(en.getKey(), en.getValue());
+                }
+
+                if (customFirst != null) {
+                    TriState canEnchant = customFirst.canEnchant(en.getKey());
+                    if (canEnchant == TriState.FALSE) {
+                        this.removeEnchantItemStack(result, en.getKey());
+                    } else if (canEnchant == TriState.TRUE) {
+                        appliedEnchantments.put(en.getKey(), en.getValue());
+                        forcedEnchantments.add(en.getKey());
+                    }
                 }
             }
         }
 
-        for (Map.Entry<CustomEnchantment, Integer> ent : customEnchants.entrySet()) {
-            CustomEnchantment enchant = ent.getKey();
+        for (Map.Entry<Enchantment, Integer> ent : appliedEnchantments.entrySet()) {
+            Enchantment enchant = ent.getKey();
             int level = Math.min(enchant.getMaxLevel(), ent.getValue());
 
-            if (this.enchantItemStack(result, enchant, level, false)) {
-                repairCost += enchant.getAnvilMergeCost(level);
+            boolean force = forcedEnchantments.contains(enchant);
+
+            if (!this.enchantItemStack(result, enchant, level, force)) {
+                continue;
+            }
+
+            if (enchant instanceof CustomEnchantment customEnchantment) {
+                repairCost += customEnchantment.getAnvilMergeCost(level);
+            } else {
+                repairCost += level; //TODO: I don't know the math for this...
             }
         }
 
         if (!first.equals(result)) {
             this.updateItemLoreEnchants(result);
-            this.reformatItemNameColours(first, result);
+            this.reformatItemNameColours(result);
             event.setResult(result);
 
             int newRepairCost = repairCost;
