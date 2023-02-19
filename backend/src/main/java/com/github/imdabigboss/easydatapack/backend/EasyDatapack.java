@@ -6,6 +6,7 @@ import com.github.imdabigboss.easydatapack.api.EasyDatapackBase;
 import com.github.imdabigboss.easydatapack.api.utils.YmlConfig;
 import com.github.imdabigboss.easydatapack.backend.managers.*;
 import com.github.imdabigboss.easydatapack.backend.registrar.*;
+import com.github.imdabigboss.easydatapack.backend.utils.PacketUtilImpl;
 import com.github.imdabigboss.easydatapack.backend.utils.YmlConfigImpl;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -18,6 +19,7 @@ import java.util.logging.Logger;
 public class EasyDatapack extends JavaPlugin implements EasyDatapackBase {
     private Logger log;
     private YmlConfig config;
+    private PacketUtilImpl packetUtil;
 
     private RecipeManagerImpl recipeManager;
     private BlockManagerImpl blockManager;
@@ -35,6 +37,7 @@ public class EasyDatapack extends JavaPlugin implements EasyDatapackBase {
         this.log = this.getLogger();
         this.config = new YmlConfigImpl(this);
         this.config.saveConfig();
+        this.packetUtil = new PacketUtilImpl();
 
         this.recipeManager = new RecipeManagerImpl(this);
         this.blockManager = new BlockManagerImpl(this);
@@ -85,6 +88,11 @@ public class EasyDatapack extends JavaPlugin implements EasyDatapackBase {
     @Override
     public @NonNull YmlConfig getAPIConfig() {
         return this.config;
+    }
+
+    @Override
+    public @NonNull PacketUtilImpl getPacketUtil() {
+        return this.packetUtil;
     }
 
     @Override

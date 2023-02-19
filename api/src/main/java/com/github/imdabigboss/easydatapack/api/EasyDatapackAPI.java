@@ -1,6 +1,7 @@
 package com.github.imdabigboss.easydatapack.api;
 
 import com.github.imdabigboss.easydatapack.api.managers.*;
+import com.github.imdabigboss.easydatapack.api.utils.PacketUtil;
 import com.github.imdabigboss.easydatapack.api.utils.YmlConfig;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -44,6 +45,14 @@ public class EasyDatapackAPI {
      */
     public static @NonNull YmlConfig getAPIConfig() {
         return api.getAPIConfig();
+    }
+
+    /**
+     * Gets the EasyDatapack packet utility.
+     * @return the EasyDatapack packet utility
+     */
+    public static @NonNull PacketUtil getPacketUtil() {
+        return api.getPacketUtil();
     }
 
     /**

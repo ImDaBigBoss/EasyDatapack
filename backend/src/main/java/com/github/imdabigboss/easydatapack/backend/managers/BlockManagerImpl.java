@@ -70,18 +70,20 @@ public class BlockManagerImpl implements Listener, BlockManager {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event) {
-        Long last = lastPlaceEvent.get(event.getPlayer().getUniqueId());
+        Player player = event.getPlayer();
+
+        Long last = lastPlaceEvent.get(player.getUniqueId());
         long now = System.currentTimeMillis();
         if (last == null) {
-            this.lastPlaceEvent.put(event.getPlayer().getUniqueId(), now);
+            this.lastPlaceEvent.put(player.getUniqueId(), now);
         } else {
             if (now - last < 100) {
                 return;
             }
-            this.lastPlaceEvent.replace(event.getPlayer().getUniqueId(), now);
+            this.lastPlaceEvent.replace(player.getUniqueId(), now);
         }
 
-        if (event.getPlayer().getGameMode() == GameMode.ADVENTURE) {
+        if (player.getGameMode() == GameMode.ADVENTURE) {
             return;
         }
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getClickedBlock() == null || event.getHand() == null) {
@@ -121,7 +123,9 @@ public class BlockManagerImpl implements Listener, BlockManager {
             return;
         }
 
-        if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
+        this.datapack.getPacketUtil().sendPlayerArmAnimation(player);
+
+        if (player.getGameMode() != GameMode.CREATIVE) {
             event.getItem().setAmount(event.getItem().getAmount() - 1);
         }
     }

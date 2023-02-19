@@ -1,6 +1,7 @@
 package com.github.imdabigboss.easydatapack.api;
 
 import com.github.imdabigboss.easydatapack.api.managers.*;
+import com.github.imdabigboss.easydatapack.api.utils.PacketUtil;
 import com.github.imdabigboss.easydatapack.api.utils.YmlConfig;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -13,6 +14,8 @@ public interface EasyDatapackBase {
     void registerCustomAdder(@NonNull Consumer<CustomAdder> customAdder);
 
     @NonNull YmlConfig getAPIConfig();
+
+    @NonNull PacketUtil getPacketUtil();
 
     @NonNull RecipeManager getRecipeManager();
 

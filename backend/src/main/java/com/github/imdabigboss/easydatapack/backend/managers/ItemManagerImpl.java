@@ -10,6 +10,7 @@ import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -318,11 +319,14 @@ public class ItemManagerImpl implements Listener, ItemManager {
                     ItemStack newItem = event.getItem().clone();
                     newItem.setAmount(1);
                     playerInventory.setHelmet(newItem);
+
+                    this.datapack.getPacketUtil().sendPlayerArmAnimation(player);
+                    player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_GENERIC, 1.0f, 1.0f);
+
                     if (player.getGameMode() != GameMode.CREATIVE) {
                         event.getItem().setAmount(event.getItem().getAmount() - 1);
                     }
                 }
-
             }
 
             Consumer<PlayerInteractEvent> consumer = customItem.getItemUseEvent();
