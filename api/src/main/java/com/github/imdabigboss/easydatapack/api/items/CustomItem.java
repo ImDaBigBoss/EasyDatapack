@@ -385,7 +385,14 @@ public class CustomItem {
         }
 
         /**
-         * Sets the event listener of the item.
+         * Sets the event listener of the item. The classes specified here must have a constructor like this:
+         * <pre>
+         *     public MyListener(CustomItem customItem) {
+         *     }
+         * </pre>
+         *
+         * The use of this method is completely optional, you can just register the listener yourself with the usual API.
+         *
          * @param eventListener the event listener of the item
          * @return the builder
          */

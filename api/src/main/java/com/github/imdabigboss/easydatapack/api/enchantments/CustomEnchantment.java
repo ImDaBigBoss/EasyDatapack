@@ -457,7 +457,14 @@ public class CustomEnchantment extends Enchantment {
         }
 
         /**
-         * Sets the event listener of the enchantment.
+         * Sets the event listener of the enchantment. The classes specified here must have a constructor like this:
+         * <pre>
+         *     public MyListener(CustomEnchantment customItem) {
+         *     }
+         * </pre>
+         *
+         * The use of this method is completely optional, you can just register the listener yourself with the usual API.
+         *
          * @param eventListener the event listener class of the enchantment, or null if there is no event listener
          * @return the builder
          */
