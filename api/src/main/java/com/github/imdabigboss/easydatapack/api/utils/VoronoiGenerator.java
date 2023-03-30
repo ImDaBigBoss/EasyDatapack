@@ -3,7 +3,7 @@ package com.github.imdabigboss.easydatapack.api.utils;
 import java.util.Random;
 
 /**
- * This code was found at https://bukkit.org/threads/wgen-voronoi-noise.161319/ it is a utility that you can use to make
+ * This code was found on <a href="https://bukkit.org/threads/wgen-voronoi-noise.161319/">this thread</a>, it is a utility that you can use to make
  * custom terrain in a potential dimension.
  */
 public class VoronoiGenerator {

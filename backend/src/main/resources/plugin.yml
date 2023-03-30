@@ -2,5 +2,5 @@ name: EasyDatapack
 version: 1.1
 main: com.github.imdabigboss.easydatapack.backend.EasyDatapack
 api-version: 1.19
-depend: ["ProtocolLib"]
+depend: []
 softdepend: ["Geyser-Spigot"]

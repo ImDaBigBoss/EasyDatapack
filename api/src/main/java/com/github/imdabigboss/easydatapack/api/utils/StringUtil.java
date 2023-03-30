@@ -92,7 +92,6 @@ public class StringUtil {
      * @return the string without colours
      */
     public static @NonNull String removeColors(@NonNull String str) {
-        String tmp = ChatColor.stripColor(str);
-        return tmp == null ? "" : tmp;
+        return ChatColor.stripColor(str);
     }
 }

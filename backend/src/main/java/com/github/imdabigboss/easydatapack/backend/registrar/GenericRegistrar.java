@@ -1,7 +1,6 @@
 package com.github.imdabigboss.easydatapack.backend.registrar;
 
 import com.github.imdabigboss.easydatapack.api.CustomAdder;
-import com.github.imdabigboss.easydatapack.api.exceptions.CustomRecipeException;
 import com.github.imdabigboss.easydatapack.backend.CustomAdderImpl;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -25,12 +24,7 @@ public abstract class GenericRegistrar {
     public abstract void onEnableInt();
 
     public void onDisable() {
-        try {
-            this.easyDatapack.getRecipeManager().unregisterAllRecipes();
-        } catch (CustomRecipeException e) {
-            e.printStackTrace();
-        }
-
+        this.easyDatapack.getRecipeManager().unregisterAllRecipes();
         this.easyDatapack.getEnchantmentManager().unregisterEnchantments();
 
         this.onDisableInt();

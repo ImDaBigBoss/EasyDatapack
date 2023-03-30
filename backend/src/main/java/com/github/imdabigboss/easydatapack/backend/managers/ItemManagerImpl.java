@@ -1,12 +1,15 @@
 package com.github.imdabigboss.easydatapack.backend.managers;
 
 import com.github.imdabigboss.easydatapack.api.exceptions.CustomItemException;
-import com.github.imdabigboss.easydatapack.api.exceptions.EasyDatapackException;
 import com.github.imdabigboss.easydatapack.api.items.CustomHatItem;
 import com.github.imdabigboss.easydatapack.api.items.CustomItem;
 import com.github.imdabigboss.easydatapack.api.items.CustomToolItem;
 import com.github.imdabigboss.easydatapack.api.managers.ItemManager;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
+import com.github.imdabigboss.easydatapack.backend.items.CustomHatItemImpl;
+import com.github.imdabigboss.easydatapack.backend.items.CustomItemImpl;
+import com.github.imdabigboss.easydatapack.backend.items.CustomToolItemImpl;
+import com.github.imdabigboss.easydatapack.backend.utils.GenericManager;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -31,16 +34,21 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class ItemManagerImpl implements Listener, ItemManager {
-    private final EasyDatapack datapack;
-
+public class ItemManagerImpl extends GenericManager implements ItemManager {
     private final Map<Integer, CustomItem> items = new HashMap<>();
 
     public ItemManagerImpl(EasyDatapack datapack) {
-        this.datapack = datapack;
+        super(datapack);
     }
 
-    public void registerCustomItem(CustomItem item) throws EasyDatapackException {
+    @Override
+    public void registerBuilders() {
+        this.datapack.registerBuilder(CustomItem.Builder.class, CustomItemImpl.BuilderImpl.class);
+        this.datapack.registerBuilder(CustomToolItem.ToolBuilder.class, CustomToolItemImpl.ToolBuilderImpl.class);
+        this.datapack.registerBuilder(CustomHatItem.HatBuilder.class, CustomHatItemImpl.HatBuilderImpl.class);
+    }
+
+    public void registerCustomItem(CustomItem item) throws CustomItemException {
         if (this.items.containsKey(item.getCustomModelData())) {
             throw new CustomItemException("Custom model data " + item.getCustomModelData() + " is already registered for " + item.getNamespaceKey() + "!");
         }
@@ -320,7 +328,7 @@ public class ItemManagerImpl implements Listener, ItemManager {
                     newItem.setAmount(1);
                     playerInventory.setHelmet(newItem);
 
-                    this.datapack.getPacketUtil().sendPlayerArmAnimation(player);
+                    player.swingMainHand();
                     player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_GENERIC, 1.0f, 1.0f);
 
                     if (player.getGameMode() != GameMode.CREATIVE) {

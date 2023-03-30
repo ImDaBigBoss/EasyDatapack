@@ -3,11 +3,11 @@ package com.github.imdabigboss.easydatapack.backend.managers;
 import com.github.imdabigboss.easydatapack.api.exceptions.CustomMapException;
 import com.github.imdabigboss.easydatapack.api.managers.MapManager;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
+import com.github.imdabigboss.easydatapack.backend.utils.GenericManager;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.server.MapInitializeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
@@ -17,6 +17,7 @@ import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.bukkit.map.MapView.Scale;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -25,14 +26,17 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MapManagerImpl implements Listener, MapManager {
-    private final EasyDatapack datapack;
-
+public class MapManagerImpl extends GenericManager implements MapManager {
     private final Map<Integer, String> savedImages = new HashMap<>();
 
     public MapManagerImpl(EasyDatapack datapack) {
-        this.datapack = datapack;
+        super(datapack);
         this.loadImages();
+    }
+
+    @Override
+    public void registerBuilders() {
+        //No builders to register
     }
 
     @EventHandler
@@ -50,7 +54,7 @@ public class MapManagerImpl implements Listener, MapManager {
         }
     }
 
-    public void saveImage(Integer id, String url) {
+    public void saveImage(int id, String url) {
         this.datapack.getConfig().set("ids." + id, url);
         this.datapack.saveConfig();
     }
@@ -58,17 +62,17 @@ public class MapManagerImpl implements Listener, MapManager {
     private void loadImages() {
         if (this.datapack.getConfig().contains("ids")) {
             this.datapack.getConfig().getConfigurationSection("ids").getKeys(false).forEach(id -> {
-                savedImages.put(Integer.parseInt(id), this.datapack.getConfig().getString("ids." + id));
+                this.savedImages.put(Integer.parseInt(id), this.datapack.getConfig().getString("ids." + id));
             });
         }
     }
 
     public boolean hasImage(int id) {
-        return savedImages.containsKey(id);
+        return this.savedImages.containsKey(id);
     }
 
     public String getImage(int id) {
-        return savedImages.get(id);
+        return this.savedImages.get(id);
     }
 
     @Override
@@ -88,6 +92,8 @@ public class MapManagerImpl implements Listener, MapManager {
             return null;
         }
         view.addRenderer(renderer);
+
+        this.saveImage(view.getId(), url.toString());
 
         ItemStack map = new ItemStack(Material.FILLED_MAP);
         MapMeta meta = (MapMeta) map.getItemMeta();
@@ -115,7 +121,7 @@ public class MapManagerImpl implements Listener, MapManager {
         }
 
         @Override
-        public void render(MapView view, MapCanvas canvas, Player player) {
+        public void render(@NotNull MapView view, @NotNull MapCanvas canvas, @NotNull Player player) {
             if (this.done) {
                 return;
             }

@@ -3,6 +3,8 @@ package com.github.imdabigboss.easydatapack.backend.managers;
 import com.github.imdabigboss.easydatapack.api.blocks.CustomBlock;
 import com.github.imdabigboss.easydatapack.api.managers.BlockManager;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
+import com.github.imdabigboss.easydatapack.backend.blocks.CustomBlockImpl;
+import com.github.imdabigboss.easydatapack.backend.utils.GenericManager;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,7 +16,6 @@ import org.bukkit.block.data.MultipleFacing;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
@@ -29,15 +30,18 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.*;
 
-public class BlockManagerImpl implements Listener, BlockManager {
-    private final EasyDatapack datapack;
-
+public class BlockManagerImpl extends GenericManager implements BlockManager {
     private final Map<Integer, CustomBlock> blocks = new HashMap<>();
     private final Map<Location, CustomBlock> customPlacedBlocks = new HashMap<>();
     private final Map<UUID, Long> lastPlaceEvent = new HashMap<>();
 
     public BlockManagerImpl(EasyDatapack datapack) {
-        this.datapack = datapack;
+        super(datapack);
+    }
+
+    @Override
+    public void registerBuilders() {
+        this.datapack.registerBuilder(CustomBlock.Builder.class, CustomBlockImpl.BuilderImpl.class);
     }
 
     public void registerCustomBlock(CustomBlock block) {
@@ -123,7 +127,7 @@ public class BlockManagerImpl implements Listener, BlockManager {
             return;
         }
 
-        this.datapack.getPacketUtil().sendPlayerArmAnimation(player);
+        player.swingMainHand();
 
         if (player.getGameMode() != GameMode.CREATIVE) {
             event.getItem().setAmount(event.getItem().getAmount() - 1);
@@ -201,7 +205,7 @@ public class BlockManagerImpl implements Listener, BlockManager {
         }
 
         Player player = (Player) event.getWhoClicked();
-        Block block = player.getTargetBlock(5);
+        Block block = player.getTargetBlockExact(5);
         if (block == null || event.getCursor().getType() != block.getType()) {
             return;
         }

@@ -5,6 +5,7 @@ import com.github.imdabigboss.easydatapack.api.exceptions.CustomDimensionExcepti
 import com.github.imdabigboss.easydatapack.api.managers.DimensionManager;
 import com.github.imdabigboss.easydatapack.api.utils.BlockFaces;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
+import com.github.imdabigboss.easydatapack.backend.utils.GenericManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -13,7 +14,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -25,13 +25,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DimensionManagerImpl implements Listener, DimensionManager {
-    private final EasyDatapack datapack;
-
+public class DimensionManagerImpl extends GenericManager implements DimensionManager {
     private final Map<String, CustomDimension> dimensions = new HashMap<>();
 
     public DimensionManagerImpl(EasyDatapack datapack) {
-        this.datapack = datapack;
+        super(datapack);
+    }
+
+    @Override
+    public void registerBuilders() {
+        //TODO: Create builders
     }
 
     public void registerCustomDimension(CustomDimension dimension) throws CustomDimensionException {

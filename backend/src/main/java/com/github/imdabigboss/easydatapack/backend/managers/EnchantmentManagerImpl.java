@@ -6,6 +6,8 @@ import com.github.imdabigboss.easydatapack.api.items.CustomItem;
 import com.github.imdabigboss.easydatapack.api.items.CustomToolItem;
 import com.github.imdabigboss.easydatapack.api.managers.EnchantmentManager;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
+import com.github.imdabigboss.easydatapack.backend.enchantments.CustomEnchantmentImpl;
+import com.github.imdabigboss.easydatapack.backend.utils.GenericManager;
 import com.github.imdabigboss.easydatapack.backend.utils.LoreUtil;
 import net.kyori.adventure.util.TriState;
 import org.bukkit.ChatColor;
@@ -30,26 +32,28 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class EnchantmentManagerImpl implements Listener, EnchantmentManager {
-    protected final EasyDatapack datapack;
-
+public class EnchantmentManagerImpl extends GenericManager implements EnchantmentManager {
     private final Map<String, CustomEnchantment> enchantments = new HashMap<>();
 
     public EnchantmentManagerImpl(EasyDatapack datapack) {
-        this.datapack = datapack;
+        super(datapack);
+    }
+
+    @Override
+    public void registerBuilders() {
+        this.datapack.registerBuilder(CustomEnchantment.Builder.class, CustomEnchantmentImpl.BuilderImpl.class);
     }
 
     public void registerCustomEnchantment(CustomEnchantment enchantment) throws CustomEnchantmentException {
-        boolean registered = Arrays.stream(Enchantment.values()).collect(Collectors.toList()).contains(enchantment);
+        boolean registered = Arrays.stream(Enchantment.values()).toList().contains(enchantment.asEnchantment());
         enchantments.put(enchantment.getNamespace(), enchantment);
 
         if (!registered) {
-            this.registerEnchantment(enchantment);
+            this.registerEnchantment(enchantment.asEnchantment());
         } else {
-            throw new CustomEnchantmentException("Enchantment already registered: \"" + enchantment.getKey() + "\"");
+            throw new CustomEnchantmentException("Enchantment already registered: \"" + enchantment.asEnchantment().getKey() + "\"");
         }
     }
 
@@ -75,8 +79,8 @@ public class EnchantmentManagerImpl implements Listener, EnchantmentManager {
             @SuppressWarnings("unchecked")
             HashMap<NamespacedKey, Enchantment> byKey = (HashMap<NamespacedKey, Enchantment>) keyField.get(null);
 
-            for (Enchantment enchantment : this.enchantments.values()) {
-                byKey.remove(enchantment.getKey());
+            for (CustomEnchantment enchantment : this.enchantments.values()) {
+                byKey.remove(enchantment.asEnchantment().getKey());
             }
 
             Field nameField = Enchantment.class.getDeclaredField("byName");
@@ -85,7 +89,7 @@ public class EnchantmentManagerImpl implements Listener, EnchantmentManager {
             @SuppressWarnings("unchecked")
             HashMap<String, Enchantment> byName = (HashMap<String, Enchantment>) nameField.get(null);
 
-            for (Enchantment enchantment : this.enchantments.values()) {
+            for (CustomEnchantment enchantment : this.enchantments.values()) {
                 byName.remove(enchantment.getName());
             }
         } catch (Exception ignored) {
@@ -213,14 +217,14 @@ public class EnchantmentManagerImpl implements Listener, EnchantmentManager {
     @Override
     public void updateItemLoreEnchants(@NonNull ItemStack item) {
         for (CustomEnchantment enchantment : this.enchantments.values()) {
-            LoreUtil.delLore(item, enchantment.getKey().getKey());
+            LoreUtil.delLore(item, enchantment.asEnchantment().getKey().getKey());
         }
 
         for (Map.Entry<CustomEnchantment, Integer> entry : this.getItemCustomEnchants(item).entrySet()) {
             CustomEnchantment enchantment = entry.getKey();
             int level = entry.getValue();
 
-            LoreUtil.addLore(item, enchantment.getKey().getKey(), ChatColor.GRAY + enchantment.formatEnchantmentName(level), 0);
+            LoreUtil.addLore(item, enchantment.asEnchantment().getKey().getKey(), ChatColor.GRAY + enchantment.formatEnchantmentName(level), 0);
         }
     }
 
@@ -244,7 +248,7 @@ public class EnchantmentManagerImpl implements Listener, EnchantmentManager {
             ItemStack newResult = result.clone();
 
             this.getItemCustomEnchants(first).forEach((hasEach, hasLevel) -> {
-                this.enchantItemStack(newResult, hasEach, hasLevel, true);
+                this.enchantItemStack(newResult, hasEach.asEnchantment(), hasLevel, true);
             });
             this.updateItemLoreEnchants(newResult);
             this.reformatItemNameColours(newResult);
@@ -281,12 +285,12 @@ public class EnchantmentManagerImpl implements Listener, EnchantmentManager {
                     if (existingEnchantments.containsKey(en.getKey())) {
                         int oldLevel = existingEnchantments.get(en.getKey());
                         if (oldLevel == en.getValue()) {
-                            appliedEnchantments.put(customEnchantment, oldLevel + 1);
+                            appliedEnchantments.put(customEnchantment.asEnchantment(), oldLevel + 1);
                         } else {
-                            appliedEnchantments.put(customEnchantment, Math.max(oldLevel, en.getValue()));
+                            appliedEnchantments.put(customEnchantment.asEnchantment(), Math.max(oldLevel, en.getValue()));
                         }
                     } else {
-                        appliedEnchantments.put(customEnchantment, en.getValue());
+                        appliedEnchantments.put(customEnchantment.asEnchantment(), en.getValue());
                     }
                 }
 
@@ -316,7 +320,7 @@ public class EnchantmentManagerImpl implements Listener, EnchantmentManager {
                 repairCost += customEnchantment.getAnvilMergeCost(level);
             } else {
                 if (customFirst instanceof CustomToolItem toolItem) {
-                    CustomToolItem.formatToolPropertiesLore(result, toolItem);
+                    toolItem.reformatLore(result);
                 }
             }
         }
@@ -350,7 +354,7 @@ public class EnchantmentManagerImpl implements Listener, EnchantmentManager {
             }
             curses.entrySet().removeIf(entry -> !entry.getKey().isCursed());
 
-            curses.forEach((enchant, level) -> this.enchantItemStack(result, enchant, level, true));
+            curses.forEach((enchant, level) -> this.enchantItemStack(result, enchant.asEnchantment(), level, true));
             this.updateItemLoreEnchants(result);
         });
     }

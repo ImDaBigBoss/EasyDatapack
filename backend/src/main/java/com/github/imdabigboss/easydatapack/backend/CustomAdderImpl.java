@@ -4,10 +4,8 @@ import com.github.imdabigboss.easydatapack.api.CustomAdder;
 import com.github.imdabigboss.easydatapack.api.blocks.CustomBlock;
 import com.github.imdabigboss.easydatapack.api.dimentions.CustomDimension;
 import com.github.imdabigboss.easydatapack.api.enchantments.CustomEnchantment;
-import com.github.imdabigboss.easydatapack.api.exceptions.CustomDimensionException;
-import com.github.imdabigboss.easydatapack.api.exceptions.CustomEnchantmentException;
-import com.github.imdabigboss.easydatapack.api.exceptions.CustomRecipeException;
-import com.github.imdabigboss.easydatapack.api.exceptions.EasyDatapackException;
+import com.github.imdabigboss.easydatapack.api.entities.CustomEntity;
+import com.github.imdabigboss.easydatapack.api.exceptions.*;
 import com.github.imdabigboss.easydatapack.api.items.CustomItem;
 import com.github.imdabigboss.easydatapack.backend.managers.*;
 import org.bukkit.inventory.Recipe;
@@ -23,6 +21,7 @@ public class CustomAdderImpl extends CustomAdder {
     private final EnchantmentManagerImpl enchantmentManager;
     private final ItemManagerImpl itemManager;
     private final RecipeManagerImpl recipeManager;
+    private final EntityManagerImpl entityManager;
 
     public CustomAdderImpl(EasyDatapack datapack, Object event) {
         this.event = event;
@@ -32,6 +31,7 @@ public class CustomAdderImpl extends CustomAdder {
         this.enchantmentManager = datapack.getEnchantmentManager();
         this.itemManager = datapack.getItemManager();
         this.recipeManager = datapack.getRecipeManager();
+        this.entityManager = datapack.getEntityManager();
     }
 
     @Override
@@ -50,7 +50,7 @@ public class CustomAdderImpl extends CustomAdder {
     }
 
     @Override
-    public void register(CustomItem item) throws EasyDatapackException {
+    public void register(CustomItem item) throws CustomItemException {
         this.itemManager.registerCustomItem(item);
 
         if (this.event != null) {
@@ -71,5 +71,10 @@ public class CustomAdderImpl extends CustomAdder {
     @Override
     public void register(Recipe recipe) throws CustomRecipeException {
         this.recipeManager.registerCustomRecipe(recipe);
+    }
+
+    @Override
+    public void register(CustomEntity entity) throws CustomEntityException {
+        this.entityManager.registerCustomEntity(entity);
     }
 }

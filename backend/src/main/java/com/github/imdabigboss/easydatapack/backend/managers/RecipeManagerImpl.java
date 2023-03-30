@@ -3,6 +3,7 @@ package com.github.imdabigboss.easydatapack.backend.managers;
 import com.github.imdabigboss.easydatapack.api.exceptions.CustomRecipeException;
 import com.github.imdabigboss.easydatapack.api.managers.RecipeManager;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
+import com.github.imdabigboss.easydatapack.backend.utils.GenericManager;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Recipe;
@@ -11,13 +12,16 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipeManagerImpl implements RecipeManager {
-    private final EasyDatapack datapack;
-
+public class RecipeManagerImpl extends GenericManager implements RecipeManager {
     private final List<NamespacedKey> recipes = new ArrayList<>();
 
     public RecipeManagerImpl(EasyDatapack datapack) {
-        this.datapack = datapack;
+        super(datapack);
+    }
+
+    @Override
+    public void registerBuilders() {
+        //No builders to register
     }
 
     public void registerCustomRecipe(Recipe recipe) throws CustomRecipeException {
@@ -32,7 +36,7 @@ public class RecipeManagerImpl implements RecipeManager {
         }
     }
 
-    public void unregisterAllRecipes() throws CustomRecipeException {
+    public void unregisterAllRecipes() {
         for (NamespacedKey key : this.recipes) {
             this.datapack.getServer().removeRecipe(key);
         }

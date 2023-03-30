@@ -3,10 +3,8 @@ package com.github.imdabigboss.easydatapack.api;
 import com.github.imdabigboss.easydatapack.api.blocks.CustomBlock;
 import com.github.imdabigboss.easydatapack.api.dimentions.CustomDimension;
 import com.github.imdabigboss.easydatapack.api.enchantments.CustomEnchantment;
-import com.github.imdabigboss.easydatapack.api.exceptions.CustomDimensionException;
-import com.github.imdabigboss.easydatapack.api.exceptions.CustomEnchantmentException;
-import com.github.imdabigboss.easydatapack.api.exceptions.CustomRecipeException;
-import com.github.imdabigboss.easydatapack.api.exceptions.EasyDatapackException;
+import com.github.imdabigboss.easydatapack.api.entities.CustomEntity;
+import com.github.imdabigboss.easydatapack.api.exceptions.*;
 import com.github.imdabigboss.easydatapack.api.items.CustomItem;
 import org.bukkit.inventory.Recipe;
 
@@ -40,9 +38,9 @@ public abstract class CustomAdder {
     /**
      * Registers a custom item.
      * @param item the item to register
-     * @throws EasyDatapackException if something goes wrong while registering the item
+     * @throws CustomItemException if something goes wrong while registering the item
      */
-    public abstract void register(CustomItem item) throws EasyDatapackException;
+    public abstract void register(CustomItem item) throws CustomItemException;
 
     /**
      * Registers a custom recipe.
@@ -50,4 +48,11 @@ public abstract class CustomAdder {
      * @throws CustomRecipeException if something goes wrong while registering the recipe
      */
     public abstract void register(Recipe recipe) throws CustomRecipeException;
+
+    /**
+     * Registers a custom entity.
+     * @param entity the entity to register
+     * @throws CustomEntityException if something goes wrong while registering the entity
+     */
+    public abstract void register(CustomEntity entity) throws CustomEntityException;
 }

@@ -1,4 +1,4 @@
-package com.github.imdabigboss.easydatapack.api.utils;
+package com.github.imdabigboss.easydatapack.api.utils.math;
 
 /**
  * Some math utilities.
