@@ -20,9 +20,14 @@ public class CustomHatItemImpl extends CustomItemImpl implements CustomHatItem, 
         super(customModelData, namespaceKey, name, baseMaterial, unbreakable, hideFlags, newItem, eventListener, itemUseEvent, spacingBeforeLore, lore, attributeModifiers, enchantments, allowedEnchantments, forbiddenEnchantments);
     }
 
-    public static class HatBuilderImpl extends BuilderImpl implements HatBuilder, GenericBuilderImpl {
+    public static class HatBuilderImpl extends BuilderImpl implements HatBuilder {
         public HatBuilderImpl(int customModelData, String namespaceKey, String name, Material baseMaterial) {
             super(customModelData, namespaceKey, name, baseMaterial);
+        }
+
+        @Override
+        public @NonNull CustomHatItem build() {
+            return new CustomHatItemImpl(this.customModelData, this.namespaceKey, this.name, this.baseMaterial, this.unbreakable, this.hideFlags, this.newItem, this.eventListener, this.itemUseEvent, this.spacingBeforeLore, this.lore, this.attributeModifiers, this.enchantments, this.allowedEnchantments, this.forbiddenEnchantments);
         }
     }
 }

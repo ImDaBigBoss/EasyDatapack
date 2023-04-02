@@ -169,7 +169,7 @@ public class DimensionManagerImpl extends GenericManager implements DimensionMan
         if (dimension == null) {
             return;
         }
-
+        
         if (!this.isPortal(blocks, portalMaterial, Material.NETHER_PORTAL)) {
             return;
         }

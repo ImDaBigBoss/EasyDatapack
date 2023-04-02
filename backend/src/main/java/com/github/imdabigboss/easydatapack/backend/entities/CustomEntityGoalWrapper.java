@@ -7,7 +7,6 @@ import com.github.imdabigboss.easydatapack.api.entities.CustomEntityGoal;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Pig;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumSet;
 
@@ -50,12 +49,12 @@ public class CustomEntityGoalWrapper implements Goal<Pig> {
     }
 
     @Override
-    public @NotNull GoalKey<Pig> getKey() {
+    public @NonNull GoalKey<Pig> getKey() {
         return this.goalKey;
     }
 
     @Override
-    public @NotNull EnumSet<GoalType> getTypes() {
+    public @NonNull EnumSet<GoalType> getTypes() {
         return this.types;
     }
 }

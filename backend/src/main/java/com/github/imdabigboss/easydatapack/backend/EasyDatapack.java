@@ -15,7 +15,6 @@ import com.github.imdabigboss.easydatapack.backend.utils.YmlConfigImpl;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.geysermc.geyser.api.GeyserApi;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
@@ -141,7 +140,7 @@ public class EasyDatapack extends JavaPlugin implements EasyDatapackBase {
         return this.entityManager;
     }
 
-    public void registerBuilder(@NotNull Class<? extends GenericBuilder<?>> type, @NonNull Class<? extends GenericBuilderImpl> builder) {
+    public void registerBuilder(@NonNull Class<? extends GenericBuilder<?>> type, @NonNull Class<? extends GenericBuilderImpl> builder) {
         if (this.builders.containsKey(type)) {
             throw new RuntimeException("Builder type " + type + " is already registered.");
         }
@@ -150,7 +149,7 @@ public class EasyDatapack extends JavaPlugin implements EasyDatapackBase {
     }
 
     @Override
-    public @NonNull GenericBuilder<?> createBuilder(@NotNull Class<? extends GenericBuilder<?>> type, @NotNull @NonNull Object... args) {
+    public @NonNull GenericBuilder<?> createBuilder(@NonNull Class<? extends GenericBuilder<?>> type, @NonNull Object... args) {
         Class<? extends GenericBuilderImpl> builder = this.builders.get(type);
         if (builder == null) {
             throw new RuntimeException("Builder type " + type + " hasn't been registered... Please speak to the developer.");

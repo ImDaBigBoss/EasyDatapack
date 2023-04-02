@@ -1,11 +1,13 @@
 package com.github.imdabigboss.easydatapack.backend.managers;
 
 import com.github.imdabigboss.easydatapack.api.exceptions.CustomItemException;
+import com.github.imdabigboss.easydatapack.api.items.CustomFoodItem;
 import com.github.imdabigboss.easydatapack.api.items.CustomHatItem;
 import com.github.imdabigboss.easydatapack.api.items.CustomItem;
 import com.github.imdabigboss.easydatapack.api.items.CustomToolItem;
 import com.github.imdabigboss.easydatapack.api.managers.ItemManager;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
+import com.github.imdabigboss.easydatapack.backend.items.CustomFoodItemImpl;
 import com.github.imdabigboss.easydatapack.backend.items.CustomHatItemImpl;
 import com.github.imdabigboss.easydatapack.backend.items.CustomItemImpl;
 import com.github.imdabigboss.easydatapack.backend.items.CustomToolItemImpl;
@@ -27,6 +29,7 @@ import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareSmithingEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -46,6 +49,7 @@ public class ItemManagerImpl extends GenericManager implements ItemManager {
         this.datapack.registerBuilder(CustomItem.Builder.class, CustomItemImpl.BuilderImpl.class);
         this.datapack.registerBuilder(CustomToolItem.ToolBuilder.class, CustomToolItemImpl.ToolBuilderImpl.class);
         this.datapack.registerBuilder(CustomHatItem.HatBuilder.class, CustomHatItemImpl.HatBuilderImpl.class);
+        this.datapack.registerBuilder(CustomFoodItem.FoodBuilder.class, CustomFoodItemImpl.FoodBudilerImpl.class);
     }
 
     public void registerCustomItem(CustomItem item) throws CustomItemException {
@@ -392,6 +396,36 @@ public class ItemManagerImpl extends GenericManager implements ItemManager {
             if (consumer != null) {
                 consumer.accept(event);
             }
+        }
+    }
+
+    @EventHandler
+    public void onEatEvent(PlayerItemConsumeEvent event) {
+        Player player = event.getPlayer();
+        ItemStack item = event.getItem();
+
+        if (item.getType().equals(Material.POTION)) {
+            return;
+        }
+
+        CustomItem customItem = this.items.get(item.getItemMeta().getCustomModelData());
+        if (customItem == null) {
+            return;
+        }
+
+        if (customItem instanceof CustomFoodItem customFoodItem) {
+            event.setCancelled(true);
+
+            if (player.getGameMode() != GameMode.CREATIVE) {
+                player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount() - 1);
+
+                if (customFoodItem.getResidue() != null) {
+                    player.getInventory().addItem(new ItemStack(customFoodItem.getResidue()));
+                }
+            }
+
+            player.setFoodLevel(Math.min(player.getFoodLevel() + customFoodItem.getNutrition(), 20));
+            player.setSaturation(Math.min(player.getSaturation() + customFoodItem.getSaturation(), 20));
         }
     }
 }

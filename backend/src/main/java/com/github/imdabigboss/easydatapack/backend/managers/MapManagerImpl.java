@@ -17,7 +17,6 @@ import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.bukkit.map.MapView.Scale;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -121,7 +120,7 @@ public class MapManagerImpl extends GenericManager implements MapManager {
         }
 
         @Override
-        public void render(@NotNull MapView view, @NotNull MapCanvas canvas, @NotNull Player player) {
+        public void render(@NonNull MapView view, @NonNull MapCanvas canvas, @NonNull Player player) {
             if (this.done) {
                 return;
             }

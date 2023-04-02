@@ -10,12 +10,12 @@ import org.bukkit.entity.ItemDisplay;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Transformation;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class EntityBoneImpl implements EntityBone, Cloneable {
     private final int displayItemCustomModelData;
@@ -205,7 +205,7 @@ public class EntityBoneImpl implements EntityBone, Cloneable {
         }
 
         @Override
-        public EntityBone build() {
+        public @NonNull EntityBone build() {
             return new EntityBoneImpl(this.displayItemCustomModelData, this.displayItemMaterial, this.children.toArray(new EntityBoneImpl[0]), this.pivot, this.rotation, this.offset);
         }
     }

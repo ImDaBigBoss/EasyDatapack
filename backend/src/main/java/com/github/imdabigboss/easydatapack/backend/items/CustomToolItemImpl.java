@@ -129,7 +129,7 @@ public class CustomToolItemImpl extends CustomItemImpl implements CustomToolItem
         }
     }
 
-    public static class ToolBuilderImpl extends BuilderImpl implements ToolBuilder, GenericBuilderImpl {
+    public static class ToolBuilderImpl extends BuilderImpl implements ToolBuilder {
         private final double attackDamage;
         private final double attackSpeed;
 

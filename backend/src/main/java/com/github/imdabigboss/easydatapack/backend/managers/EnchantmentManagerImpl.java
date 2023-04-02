@@ -199,6 +199,10 @@ public class EnchantmentManagerImpl extends GenericManager implements Enchantmen
     }
 
     private Map<CustomEnchantment, Integer> getItemCustomEnchants(ItemStack item) {
+        if (item == null || !item.hasItemMeta()) {
+            return new HashMap<>();
+        }
+
         Map<CustomEnchantment, Integer> customEnchants = new HashMap<>();
         for (Map.Entry<Enchantment, Integer> entry : this.getItemEnchants(item).entrySet()) {
             if (entry.getKey() instanceof CustomEnchantment) {

@@ -4,9 +4,9 @@ import com.github.imdabigboss.easydatapack.api.entities.model.EntityBone;
 import com.github.imdabigboss.easydatapack.api.entities.model.EntityModel;
 import com.github.imdabigboss.easydatapack.backend.utils.GenericBuilderImpl;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemDisplay;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class EntityModelImpl implements EntityModel, Cloneable {
     private EntityBoneImpl root;
@@ -51,7 +51,7 @@ public class EntityModelImpl implements EntityModel, Cloneable {
         }
 
         @Override
-        public EntityModel build() {
+        public @NonNull EntityModel build() {
             return new EntityModelImpl(this.root);
         }
     }

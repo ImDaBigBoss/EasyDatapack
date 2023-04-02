@@ -38,8 +38,8 @@ public class CustomItemImpl implements CustomItem {
     private final Consumer<PlayerInteractEvent> itemUseEvent;
     private final boolean spacingBeforeLore;
     private final String[] lore;
-    private final com.github.imdabigboss.easydatapack.api.items.CustomItem.AttributeInformation[] attributeModifiers;
-    private final com.github.imdabigboss.easydatapack.api.items.CustomItem.EnchantmentInformation[] enchantments;
+    private final CustomItem.AttributeInformation[] attributeModifiers;
+    private final CustomItem.EnchantmentInformation[] enchantments;
     private final Enchantment[] allowedEnchantments;
     private final Enchantment[] forbiddenEnchantments;
 
@@ -58,17 +58,17 @@ public class CustomItemImpl implements CustomItem {
         this.spacingBeforeLore = spacingBeforeLore;
         this.lore = lore;
 
-        this.attributeModifiers = new com.github.imdabigboss.easydatapack.api.items.CustomItem.AttributeInformation[attributeModifiers.size()];
+        this.attributeModifiers = new CustomItem.AttributeInformation[attributeModifiers.size()];
         int i = 0;
         for (Map.Entry<Attribute, List<AttributeModifier>> entry : attributeModifiers.entrySet()) {
-            this.attributeModifiers[i] = new com.github.imdabigboss.easydatapack.api.items.CustomItem.AttributeInformation(entry.getKey(), entry.getValue().toArray(new AttributeModifier[0]));
+            this.attributeModifiers[i] = new CustomItem.AttributeInformation(entry.getKey(), entry.getValue().toArray(new AttributeModifier[0]));
             i++;
         }
 
-        this.enchantments = new com.github.imdabigboss.easydatapack.api.items.CustomItem.EnchantmentInformation[enchantments.size()];
+        this.enchantments = new CustomItem.EnchantmentInformation[enchantments.size()];
         i = 0;
         for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
-            this.enchantments[i] = new com.github.imdabigboss.easydatapack.api.items.CustomItem.EnchantmentInformation(entry.getKey(), entry.getValue());
+            this.enchantments[i] = new CustomItem.EnchantmentInformation(entry.getKey(), entry.getValue());
             i++;
         }
 
@@ -96,13 +96,13 @@ public class CustomItemImpl implements CustomItem {
             itemMeta.lore(loreList);
         }
 
-        for (com.github.imdabigboss.easydatapack.api.items.CustomItem.AttributeInformation entry : this.attributeModifiers) {
+        for (AttributeInformation entry : this.attributeModifiers) {
             for (AttributeModifier modifier : entry.modifiers()) {
                 itemMeta.addAttributeModifier(entry.attribute(), modifier);
             }
         }
 
-        for (com.github.imdabigboss.easydatapack.api.items.CustomItem.EnchantmentInformation entry : this.enchantments) {
+        for (EnchantmentInformation entry : this.enchantments) {
             itemMeta.addEnchant(entry.enchantment(), entry.level(), true);
         }
 
@@ -168,12 +168,12 @@ public class CustomItemImpl implements CustomItem {
     }
 
     @Override
-    public @NonNull com.github.imdabigboss.easydatapack.api.items.CustomItem.AttributeInformation[] getAttributeModifiers() {
+    public @NonNull AttributeInformation[] getAttributeModifiers() {
         return this.attributeModifiers;
     }
 
     @Override
-    public @NonNull com.github.imdabigboss.easydatapack.api.items.CustomItem.EnchantmentInformation[] getEnchantments() {
+    public @NonNull EnchantmentInformation[] getEnchantments() {
         return this.enchantments;
     }
 

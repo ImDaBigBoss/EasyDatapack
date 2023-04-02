@@ -3,7 +3,6 @@ package com.github.imdabigboss.easydatapack.backend.entities;
 import com.github.imdabigboss.easydatapack.api.entities.CustomEntity;
 import com.github.imdabigboss.easydatapack.api.entities.CustomEntityGoal;
 import com.github.imdabigboss.easydatapack.api.entities.model.EntityModel;
-import com.github.imdabigboss.easydatapack.backend.entities.model.EntityBoneImpl;
 import com.github.imdabigboss.easydatapack.backend.entities.model.EntityModelImpl;
 import com.github.imdabigboss.easydatapack.backend.utils.GenericBuilderImpl;
 import net.kyori.adventure.text.Component;
@@ -14,7 +13,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.units.qual.N;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -113,7 +111,7 @@ public class CustomEntityImpl implements CustomEntity {
         }
 
         @Override
-        public CustomEntityImpl build() {
+        public @NonNull CustomEntityImpl build() {
             return new CustomEntityImpl(this.name, this.namespaceKey, this.eggCustomModelData, this.model, this.goals, this.health);
         }
     }
