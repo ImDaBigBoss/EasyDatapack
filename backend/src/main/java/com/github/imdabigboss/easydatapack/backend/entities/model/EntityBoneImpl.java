@@ -11,7 +11,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Transformation;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
 import java.util.ArrayList;
@@ -22,22 +21,19 @@ public class EntityBoneImpl implements EntityBone, Cloneable {
     private final Material displayItemMaterial;
     private EntityBoneImpl[] children;
 
-    private Vector3f pivot;
     private EulerAnglef rotation;
     private Vector3f offset;
 
-    private Vector3f currentPivot = null;
     private EulerAnglef currentRotation = null;
     private Vector3f currentOffset = null;
 
     private ItemDisplay display = null;
 
-    private EntityBoneImpl(int displayItemCustomModelData, Material displayItemMaterial, EntityBoneImpl[] children, Vector3f pivot, EulerAnglef rotation, Vector3f offset) {
+    private EntityBoneImpl(int displayItemCustomModelData, Material displayItemMaterial, EntityBoneImpl[] children, EulerAnglef rotation, Vector3f offset) {
         this.displayItemCustomModelData = displayItemCustomModelData;
         this.displayItemMaterial = displayItemMaterial;
         this.children = children;
 
-        this.pivot = pivot;
         this.rotation = rotation;
         this.offset = offset;
     }
@@ -58,11 +54,6 @@ public class EntityBoneImpl implements EntityBone, Cloneable {
     }
 
     @Override
-    public Vector3f getPivot() {
-        return this.pivot;
-    }
-
-    @Override
     public EulerAnglef getRotation() {
         return this.rotation;
     }
@@ -73,7 +64,6 @@ public class EntityBoneImpl implements EntityBone, Cloneable {
     }
 
     private void init() {
-        this.currentPivot = this.pivot.clone();
         this.currentRotation = this.rotation.clone();
         this.currentOffset = this.offset.clone();
     }
@@ -86,17 +76,14 @@ public class EntityBoneImpl implements EntityBone, Cloneable {
             leftRotation = parent.getRightRotation();
         }
 
-        Quaternionf quaternion = this.currentRotation.toQuaternion();
-        org.joml.Vector3f pivot = this.currentPivot.toBlockJOML();
-
-        Matrix4f result = new Matrix4f().translate(pivot.negate());
-        result.mul(new Matrix4f().rotate(quaternion)).normal();
-        Quaternionf rightRotation = new Quaternionf().setFromNormalized(result);
+        Quaternionf rightRotation = this.currentRotation.toQuaternion();
 
         org.joml.Vector3f offset = this.currentOffset.toBlockJOML();
+        if (parent != null) {
+            offset.add(parent.getTranslation());
+        }
 
-
-        Transformation transformation = new Transformation(this.currentOffset.toBlockJOML(), leftRotation, new org.joml.Vector3f(1), rightRotation);
+        Transformation transformation = new Transformation(offset, leftRotation, new org.joml.Vector3f(1), rightRotation);
         this.display.setTransformation(transformation);
 
         for (EntityBoneImpl child : this.children) {
@@ -156,7 +143,6 @@ public class EntityBoneImpl implements EntityBone, Cloneable {
                 clone.children[i] = this.children[i].clone();
             }
 
-            clone.pivot = this.pivot.clone();
             clone.rotation = this.rotation.clone();
             clone.offset = this.offset.clone();
 
@@ -171,7 +157,6 @@ public class EntityBoneImpl implements EntityBone, Cloneable {
         private final Material displayItemMaterial;
 
         private final List<EntityBoneImpl> children = new ArrayList<>();
-        private Vector3f pivot = new Vector3f();
         private EulerAnglef rotation = new EulerAnglef();
         private Vector3f offset = new Vector3f();
 
@@ -183,12 +168,6 @@ public class EntityBoneImpl implements EntityBone, Cloneable {
         @Override
         public Builder addChild(EntityBone child) {
             this.children.add((EntityBoneImpl) child);
-            return this;
-        }
-
-        @Override
-        public Builder pivot(Vector3f angle) {
-            this.pivot = angle;
             return this;
         }
 
@@ -206,7 +185,7 @@ public class EntityBoneImpl implements EntityBone, Cloneable {
 
         @Override
         public @NonNull EntityBone build() {
-            return new EntityBoneImpl(this.displayItemCustomModelData, this.displayItemMaterial, this.children.toArray(new EntityBoneImpl[0]), this.pivot, this.rotation, this.offset);
+            return new EntityBoneImpl(this.displayItemCustomModelData, this.displayItemMaterial, this.children.toArray(new EntityBoneImpl[0]), this.rotation, this.offset);
         }
     }
 }

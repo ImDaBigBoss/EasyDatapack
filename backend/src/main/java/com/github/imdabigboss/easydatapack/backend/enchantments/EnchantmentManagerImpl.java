@@ -1,12 +1,11 @@
-package com.github.imdabigboss.easydatapack.backend.managers;
+package com.github.imdabigboss.easydatapack.backend.enchantments;
 
 import com.github.imdabigboss.easydatapack.api.enchantments.CustomEnchantment;
+import com.github.imdabigboss.easydatapack.api.enchantments.EnchantmentManager;
 import com.github.imdabigboss.easydatapack.api.exceptions.CustomEnchantmentException;
 import com.github.imdabigboss.easydatapack.api.items.CustomItem;
 import com.github.imdabigboss.easydatapack.api.items.CustomToolItem;
-import com.github.imdabigboss.easydatapack.api.managers.EnchantmentManager;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
-import com.github.imdabigboss.easydatapack.backend.enchantments.CustomEnchantmentImpl;
 import com.github.imdabigboss.easydatapack.backend.utils.GenericManager;
 import com.github.imdabigboss.easydatapack.backend.utils.LoreUtil;
 import net.kyori.adventure.util.TriState;
@@ -205,12 +204,12 @@ public class EnchantmentManagerImpl extends GenericManager implements Enchantmen
 
         Map<CustomEnchantment, Integer> customEnchants = new HashMap<>();
         for (Map.Entry<Enchantment, Integer> entry : this.getItemEnchants(item).entrySet()) {
-            if (entry.getKey() instanceof CustomEnchantment) {
-                if (customEnchants.containsKey(entry.getKey())) {
-                    int maxLevel = Math.max(customEnchants.get(entry.getKey()), entry.getValue());
-                    customEnchants.put((CustomEnchantment) entry.getKey(), maxLevel);
+            if (entry.getKey() instanceof CustomEnchantment ench) {
+                if (customEnchants.containsKey(ench)) {
+                    int maxLevel = Math.max(customEnchants.get(ench), entry.getValue());
+                    customEnchants.put(ench, maxLevel);
                 } else {
-                    customEnchants.put((CustomEnchantment) entry.getKey(), entry.getValue());
+                    customEnchants.put(ench, entry.getValue());
                 }
             }
         }

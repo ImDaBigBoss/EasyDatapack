@@ -1,5 +1,6 @@
 package com.github.imdabigboss.easydatapack.api.entities.model;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.imdabigboss.easydatapack.api.EasyDatapackAPI;
 import com.github.imdabigboss.easydatapack.api.utils.GenericBuilder;
 import com.github.imdabigboss.easydatapack.api.utils.math.EulerAnglef;
@@ -39,12 +40,6 @@ public interface EntityBone {
     Material getDisplayItemMaterial();
 
     /**
-     * Gets the pivot point of the bone.
-     * @return the pivot of the bone
-     */
-    Vector3f getPivot();
-
-    /**
      * Gets the rotation of the bone.
      * @return the rotation of the bone
      */
@@ -68,17 +63,6 @@ public interface EntityBone {
         Builder addChild(EntityBone child);
 
         /**
-         * Sets the pivot point of the bone.
-         * @param angle the pivot point
-         * @return the builder
-         */
-        Builder pivot(Vector3f angle);
-
-        default Builder pivot(float x, float y, float z) {
-            return pivot(new Vector3f(x, y, z));
-        }
-
-        /**
          * Sets the rotation of the bone.
          * @param angle the rotation
          * @return the builder
@@ -91,13 +75,17 @@ public interface EntityBone {
 
         /**
          * Sets the position offset of the bone.
-         * @param angle the position offset
+         * @param offset the position offset
          * @return the builder
          */
-        Builder offset(Vector3f angle);
+        Builder offset(Vector3f offset);
 
         default Builder offset(float x, float y, float z) {
             return offset(new Vector3f(x, y, z));
+        }
+
+        default Builder offset(JsonNode offset) {
+            return offset((float) offset.get(0).asDouble(), (float) offset.get(1).asDouble(), (float) offset.get(2).asDouble());
         }
     }
 }

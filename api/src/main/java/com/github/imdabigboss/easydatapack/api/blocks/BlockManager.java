@@ -1,6 +1,5 @@
-package com.github.imdabigboss.easydatapack.api.managers;
+package com.github.imdabigboss.easydatapack.api.blocks;
 
-import com.github.imdabigboss.easydatapack.api.blocks.CustomBlock;
 import org.bukkit.block.Block;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;

@@ -1,16 +1,14 @@
-package com.github.imdabigboss.easydatapack.backend.managers;
+package com.github.imdabigboss.easydatapack.backend.entities;
 
 import com.destroystokyo.paper.entity.ai.MobGoals;
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import com.github.imdabigboss.easydatapack.api.entities.CustomEntity;
 import com.github.imdabigboss.easydatapack.api.entities.CustomEntityGoal;
+import com.github.imdabigboss.easydatapack.api.entities.EntityManager;
 import com.github.imdabigboss.easydatapack.api.entities.model.EntityBone;
 import com.github.imdabigboss.easydatapack.api.entities.model.EntityModel;
 import com.github.imdabigboss.easydatapack.api.exceptions.CustomEntityException;
-import com.github.imdabigboss.easydatapack.api.managers.EntityManager;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
-import com.github.imdabigboss.easydatapack.backend.entities.CustomEntityGoalWrapper;
-import com.github.imdabigboss.easydatapack.backend.entities.CustomEntityImpl;
 import com.github.imdabigboss.easydatapack.backend.entities.model.EntityBoneImpl;
 import com.github.imdabigboss.easydatapack.backend.entities.model.EntityModelImpl;
 import com.github.imdabigboss.easydatapack.backend.utils.GenericManager;

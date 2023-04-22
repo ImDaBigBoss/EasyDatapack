@@ -1,9 +1,8 @@
-package com.github.imdabigboss.easydatapack.backend.managers;
+package com.github.imdabigboss.easydatapack.backend.blocks;
 
+import com.github.imdabigboss.easydatapack.api.blocks.BlockManager;
 import com.github.imdabigboss.easydatapack.api.blocks.CustomBlock;
-import com.github.imdabigboss.easydatapack.api.managers.BlockManager;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
-import com.github.imdabigboss.easydatapack.backend.blocks.CustomBlockImpl;
 import com.github.imdabigboss.easydatapack.backend.utils.GenericManager;
 import org.bukkit.GameMode;
 import org.bukkit.Location;

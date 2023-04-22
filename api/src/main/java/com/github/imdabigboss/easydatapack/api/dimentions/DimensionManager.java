@@ -1,6 +1,5 @@
-package com.github.imdabigboss.easydatapack.api.managers;
+package com.github.imdabigboss.easydatapack.api.dimentions;
 
-import com.github.imdabigboss.easydatapack.api.dimentions.CustomDimension;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 

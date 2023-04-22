@@ -1,16 +1,8 @@
-package com.github.imdabigboss.easydatapack.backend.managers;
+package com.github.imdabigboss.easydatapack.backend.items;
 
 import com.github.imdabigboss.easydatapack.api.exceptions.CustomItemException;
-import com.github.imdabigboss.easydatapack.api.items.CustomFoodItem;
-import com.github.imdabigboss.easydatapack.api.items.CustomHatItem;
-import com.github.imdabigboss.easydatapack.api.items.CustomItem;
-import com.github.imdabigboss.easydatapack.api.items.CustomToolItem;
-import com.github.imdabigboss.easydatapack.api.managers.ItemManager;
+import com.github.imdabigboss.easydatapack.api.items.*;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
-import com.github.imdabigboss.easydatapack.backend.items.CustomFoodItemImpl;
-import com.github.imdabigboss.easydatapack.backend.items.CustomHatItemImpl;
-import com.github.imdabigboss.easydatapack.backend.items.CustomItemImpl;
-import com.github.imdabigboss.easydatapack.backend.items.CustomToolItemImpl;
 import com.github.imdabigboss.easydatapack.backend.utils.GenericManager;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;

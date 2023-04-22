@@ -1,7 +1,6 @@
 package com.github.imdabigboss.easydatapack.backend.items;
 
 import com.github.imdabigboss.easydatapack.api.items.CustomFoodItem;
-import com.github.imdabigboss.easydatapack.backend.utils.GenericBuilderImpl;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;

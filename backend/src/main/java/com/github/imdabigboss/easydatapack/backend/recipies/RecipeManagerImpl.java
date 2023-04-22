@@ -1,7 +1,7 @@
-package com.github.imdabigboss.easydatapack.backend.managers;
+package com.github.imdabigboss.easydatapack.backend.recipies;
 
 import com.github.imdabigboss.easydatapack.api.exceptions.CustomRecipeException;
-import com.github.imdabigboss.easydatapack.api.managers.RecipeManager;
+import com.github.imdabigboss.easydatapack.api.recipies.RecipeManager;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
 import com.github.imdabigboss.easydatapack.backend.utils.GenericManager;
 import org.bukkit.Keyed;

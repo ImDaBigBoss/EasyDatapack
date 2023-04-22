@@ -6,7 +6,13 @@ import com.github.imdabigboss.easydatapack.api.EasyDatapackBase;
 import com.github.imdabigboss.easydatapack.api.utils.GenericBuilder;
 import com.github.imdabigboss.easydatapack.api.utils.PacketUtil;
 import com.github.imdabigboss.easydatapack.api.utils.YmlConfig;
-import com.github.imdabigboss.easydatapack.backend.managers.*;
+import com.github.imdabigboss.easydatapack.backend.blocks.BlockManagerImpl;
+import com.github.imdabigboss.easydatapack.backend.dimensions.DimensionManagerImpl;
+import com.github.imdabigboss.easydatapack.backend.enchantments.EnchantmentManagerImpl;
+import com.github.imdabigboss.easydatapack.backend.entities.EntityManagerImpl;
+import com.github.imdabigboss.easydatapack.backend.items.ItemManagerImpl;
+import com.github.imdabigboss.easydatapack.backend.maps.MapManagerImpl;
+import com.github.imdabigboss.easydatapack.backend.recipies.RecipeManagerImpl;
 import com.github.imdabigboss.easydatapack.backend.registrar.DefaultRegistrar;
 import com.github.imdabigboss.easydatapack.backend.registrar.GenericRegistrar;
 import com.github.imdabigboss.easydatapack.backend.registrar.GeyserRegistrar;
@@ -37,7 +43,7 @@ public class EasyDatapack extends JavaPlugin implements EasyDatapackBase {
 
     private GenericRegistrar componentRegistrar = null;
 
-    private Map<Class<? extends GenericBuilder<?>>, Class<? extends GenericBuilderImpl>> builders = new HashMap<>();
+    private final Map<Class<? extends GenericBuilder<?>>, Class<? extends GenericBuilderImpl>> builders = new HashMap<>();
 
     @Override
     public void onLoad() {
@@ -59,8 +65,8 @@ public class EasyDatapack extends JavaPlugin implements EasyDatapackBase {
         if (this.getServer().getPluginManager().getPlugin("Geyser-Spigot") != null) {
             try {
                 GeyserApi geyserApi = GeyserApi.api();
-                this.componentRegistrar = new GeyserRegistrar(this, geyserApi);
                 this.log.info("Detected Geyser, items will be registered with it.");
+                this.componentRegistrar = new GeyserRegistrar(this, geyserApi);
             } catch (Exception e) {
                 this.componentRegistrar = null;
             }

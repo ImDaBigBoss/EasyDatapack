@@ -1,4 +1,4 @@
-package com.github.imdabigboss.easydatapack.api.managers;
+package com.github.imdabigboss.easydatapack.api.recipies;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Recipe;

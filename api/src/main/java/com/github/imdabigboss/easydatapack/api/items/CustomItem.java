@@ -124,6 +124,12 @@ public interface CustomItem {
      */
     @Nullable Enchantment[] getForbiddenEnchantments();
 
+    /**
+     * Gets if the item can be enchanted with the specified enchantment. This depends on the enchantments that are set
+     * in {@link #getAllowedEnchantments()} and {@link #getForbiddenEnchantments()}.
+     * @param enchantment the enchantment to check
+     * @return if the item can be enchanted with the specified enchantment
+     */
     @NonNull TriState canEnchant(@NonNull Enchantment enchantment);
 
     /**

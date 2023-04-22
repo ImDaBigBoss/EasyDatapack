@@ -1,7 +1,6 @@
 package com.github.imdabigboss.easydatapack.api.items;
 
 import com.github.imdabigboss.easydatapack.api.EasyDatapackAPI;
-import com.github.imdabigboss.easydatapack.api.utils.GenericBuilder;
 import org.bukkit.Material;
 import org.checkerframework.checker.nullness.qual.Nullable;
 

@@ -3,18 +3,13 @@ package com.github.imdabigboss.easydatapack.backend.registrar;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
 
 public class DefaultRegistrar extends GenericRegistrar {
-    public DefaultRegistrar(EasyDatapack easyDatapack) {
-        super(easyDatapack);
+    public DefaultRegistrar(EasyDatapack datapack) {
+        super(datapack);
     }
 
     @Override
-    public void onEnableInt() {
-        this.registerCustomComponents(null);
+    public void register() {
+        this.registerCustomComponents();
         this.finalizeRegistration();
-    }
-
-    @Override
-    public void onDisableInt() {
-
     }
 }

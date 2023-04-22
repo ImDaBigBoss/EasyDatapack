@@ -1,4 +1,4 @@
-package com.github.imdabigboss.easydatapack.api.managers;
+package com.github.imdabigboss.easydatapack.api.maps;
 
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;

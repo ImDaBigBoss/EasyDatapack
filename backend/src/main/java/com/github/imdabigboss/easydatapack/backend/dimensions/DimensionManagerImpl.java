@@ -1,8 +1,8 @@
-package com.github.imdabigboss.easydatapack.backend.managers;
+package com.github.imdabigboss.easydatapack.backend.dimensions;
 
 import com.github.imdabigboss.easydatapack.api.dimentions.CustomDimension;
+import com.github.imdabigboss.easydatapack.api.dimentions.DimensionManager;
 import com.github.imdabigboss.easydatapack.api.exceptions.CustomDimensionException;
-import com.github.imdabigboss.easydatapack.api.managers.DimensionManager;
 import com.github.imdabigboss.easydatapack.api.utils.BlockFaces;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
 import com.github.imdabigboss.easydatapack.backend.utils.GenericManager;

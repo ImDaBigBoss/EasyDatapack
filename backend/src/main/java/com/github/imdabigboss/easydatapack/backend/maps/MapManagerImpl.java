@@ -1,7 +1,7 @@
-package com.github.imdabigboss.easydatapack.backend.managers;
+package com.github.imdabigboss.easydatapack.backend.maps;
 
 import com.github.imdabigboss.easydatapack.api.exceptions.CustomMapException;
-import com.github.imdabigboss.easydatapack.api.managers.MapManager;
+import com.github.imdabigboss.easydatapack.api.maps.MapManager;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
 import com.github.imdabigboss.easydatapack.backend.utils.GenericManager;
 import org.bukkit.Material;

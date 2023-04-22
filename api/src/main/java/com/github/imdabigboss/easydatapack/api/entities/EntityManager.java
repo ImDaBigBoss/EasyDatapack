@@ -1,6 +1,5 @@
-package com.github.imdabigboss.easydatapack.api.managers;
+package com.github.imdabigboss.easydatapack.api.entities;
 
-import com.github.imdabigboss.easydatapack.api.entities.CustomEntity;
 import org.bukkit.Location;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
