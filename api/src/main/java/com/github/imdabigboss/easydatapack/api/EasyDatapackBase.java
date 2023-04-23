@@ -7,6 +7,7 @@ import com.github.imdabigboss.easydatapack.api.entities.EntityManager;
 import com.github.imdabigboss.easydatapack.api.items.ItemManager;
 import com.github.imdabigboss.easydatapack.api.maps.MapManager;
 import com.github.imdabigboss.easydatapack.api.recipies.RecipeManager;
+import com.github.imdabigboss.easydatapack.api.textures.TexturePackManager;
 import com.github.imdabigboss.easydatapack.api.utils.GenericBuilder;
 import com.github.imdabigboss.easydatapack.api.utils.PacketUtil;
 import com.github.imdabigboss.easydatapack.api.utils.YmlConfig;
@@ -24,6 +25,8 @@ public interface EasyDatapackBase {
 
     @NonNull PacketUtil getPacketUtil();
 
+    @NonNull GenericBuilder<?> createBuilder(@NonNull Class<? extends GenericBuilder<?>> type, @NonNull Object... args);
+
     @NonNull RecipeManager getRecipeManager();
 
     @NonNull BlockManager getBlockManager();
@@ -38,5 +41,5 @@ public interface EasyDatapackBase {
 
     @NonNull EntityManager getEntityManager();
 
-    @NonNull GenericBuilder<?> createBuilder(@NonNull Class<? extends GenericBuilder<?>> type, @NonNull Object... args);
+    @NonNull TexturePackManager getTexturePackManager();
 }

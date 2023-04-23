@@ -2,7 +2,10 @@ package com.github.imdabigboss.easydatapack.api.items;
 
 import com.github.imdabigboss.easydatapack.api.EasyDatapackAPI;
 import org.bukkit.Material;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import java.nio.file.Path;
 
 /**
  * This class represents a custom item that is food
@@ -14,8 +17,22 @@ public interface CustomFoodItem extends CustomItem {
      * @param namespaceKey the namespace key of the item
      * @param name the name of the item
      * @param baseMaterial the base material of the item
+     * @return the builder
      */
-    static CustomFoodItem.FoodBuilder builder(int customModelData, String namespaceKey, String name, Material baseMaterial, int nutrition, float saturation) {
+    static CustomFoodItem.FoodBuilder builder(int customModelData, @NonNull String namespaceKey, @NonNull String name, @NonNull Material baseMaterial, int nutrition, float saturation) {
+        return (CustomFoodItem.FoodBuilder) EasyDatapackAPI.createBuilder(FoodBuilder.class, customModelData, namespaceKey, name, baseMaterial, nutrition, saturation);
+    }
+
+    /**
+     * Creates a new item builder and registers the textures to the texture pack.
+     * @param namespaceKey the namespace key of the item
+     * @param name the name of the item
+     * @param baseMaterial the base material of the item
+     * @param texture the path to the item texture to register
+     * @return the builder
+     */
+    static CustomFoodItem.FoodBuilder builder(@NonNull String namespaceKey, @NonNull String name, @NonNull Material baseMaterial, @NonNull Path texture, int nutrition, float saturation) {
+        int customModelData = EasyDatapackAPI.getTexturePackManager().registerItemTexture(baseMaterial, texture);
         return (CustomFoodItem.FoodBuilder) EasyDatapackAPI.createBuilder(FoodBuilder.class, customModelData, namespaceKey, name, baseMaterial, nutrition, saturation);
     }
 

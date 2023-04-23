@@ -8,10 +8,36 @@ import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.file.Path;
 import java.util.function.Consumer;
 
 public interface CustomToolItem extends CustomItem {
+    /**
+     * Creates a new tool builder.
+     * @param customModelData the custom model data of the item
+     * @param namespaceKey the namespace key of the item
+     * @param name the name of the item
+     * @param baseMaterial the base material of the item
+     * @param attackDamage the attack damage that the tool deals
+     * @param attackSpeed the attack speed of the tool
+     * @return the builder
+     */
     static CustomToolItem.ToolBuilder builder(int customModelData, @NonNull String namespaceKey, @NonNull String name, @NonNull Material baseMaterial, double attackDamage, double attackSpeed) {
+        return (CustomToolItem.ToolBuilder) EasyDatapackAPI.createBuilder(ToolBuilder.class, customModelData, namespaceKey, name, baseMaterial, attackDamage, attackSpeed);
+    }
+
+    /**
+     * Creates a new tool builder.
+     * @param namespaceKey the namespace key of the item
+     * @param name the name of the item
+     * @param baseMaterial the base material of the item
+     * @param texture the path to the item texture to register
+     * @param attackDamage the attack damage that the tool deals
+     * @param attackSpeed the attack speed of the tool
+     * @return the builder
+     */
+    static CustomToolItem.ToolBuilder builder(@NonNull String namespaceKey, @NonNull String name, @NonNull Material baseMaterial, @NonNull Path texture, double attackDamage, double attackSpeed) {
+        int customModelData = EasyDatapackAPI.getTexturePackManager().registerItemTexture(baseMaterial, texture);
         return (CustomToolItem.ToolBuilder) EasyDatapackAPI.createBuilder(ToolBuilder.class, customModelData, namespaceKey, name, baseMaterial, attackDamage, attackSpeed);
     }
 

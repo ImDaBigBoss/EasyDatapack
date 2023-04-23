@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.file.Path;
 import java.util.function.Consumer;
 
 /**
@@ -27,8 +28,22 @@ public interface CustomItem {
      * @param namespaceKey the namespace key of the item
      * @param name the name of the item
      * @param baseMaterial the base material of the item
+     * @return the builder
      */
-    static CustomItem.Builder builder(int customModelData, String namespaceKey, String name, Material baseMaterial) {
+    static CustomItem.Builder builder(int customModelData, @NonNull String namespaceKey, @NonNull String name, @NonNull Material baseMaterial) {
+        return (CustomItem.Builder) EasyDatapackAPI.createBuilder(Builder.class, customModelData, namespaceKey, name, baseMaterial);
+    }
+
+    /**
+     * Creates a new item builder and registers the textures to the texture pack.
+     * @param namespaceKey the namespace key of the item
+     * @param name the name of the item
+     * @param baseMaterial the base material of the item
+     * @param texture the path to the item texture to register
+     * @return the builder
+     */
+    static CustomItem.Builder builder(@NonNull String namespaceKey, @NonNull String name, @NonNull Material baseMaterial, @NonNull Path texture) {
+        int customModelData = EasyDatapackAPI.getTexturePackManager().registerItemTexture(baseMaterial, texture);
         return (CustomItem.Builder) EasyDatapackAPI.createBuilder(Builder.class, customModelData, namespaceKey, name, baseMaterial);
     }
 

@@ -7,6 +7,7 @@ import com.github.imdabigboss.easydatapack.api.entities.EntityManager;
 import com.github.imdabigboss.easydatapack.api.items.ItemManager;
 import com.github.imdabigboss.easydatapack.api.maps.MapManager;
 import com.github.imdabigboss.easydatapack.api.recipies.RecipeManager;
+import com.github.imdabigboss.easydatapack.api.textures.TexturePackManager;
 import com.github.imdabigboss.easydatapack.api.utils.GenericBuilder;
 import com.github.imdabigboss.easydatapack.api.utils.PacketUtil;
 import com.github.imdabigboss.easydatapack.api.utils.YmlConfig;
@@ -61,6 +62,16 @@ public class EasyDatapackAPI {
      */
     public static @NonNull PacketUtil getPacketUtil() {
         return api.getPacketUtil();
+    }
+
+    /**
+     * Creates a builder of the specified type.
+     * @param type the type of the builder
+     * @param args the arguments to pass to the builder
+     * @return the builder
+     */
+    public static @NonNull GenericBuilder<?> createBuilder(@NonNull Class<? extends GenericBuilder<?>> type, @NonNull Object... args) {
+        return api.createBuilder(type, args);
     }
 
     /**
@@ -119,14 +130,7 @@ public class EasyDatapackAPI {
         return api.getEntityManager();
     }
 
-    /**
-     * Creates a builder of the specified type.
-     * @param type the type of the builder
-     * @param args the arguments to pass to the builder
-     * @return the builder
-     */
-    public static @NonNull GenericBuilder<?> createBuilder(@NonNull Class<? extends GenericBuilder<?>> type, @NonNull Object... args) {
-        return api.createBuilder(type, args);
+    public static @NonNull TexturePackManager getTexturePackManager() {
+        return api.getTexturePackManager();
     }
-
 }
