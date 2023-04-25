@@ -1,6 +1,6 @@
 package com.github.imdabigboss.easydatapack.backend.types.items;
 
-import com.github.imdabigboss.easydatapack.api.items.CustomFoodItem;
+import com.github.imdabigboss.easydatapack.api.types.items.CustomFoodItem;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -8,7 +8,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
@@ -56,7 +57,7 @@ public class CustomFoodItemImpl extends CustomItemImpl implements CustomFoodItem
         }
 
         @Override
-        public FoodBuilder residue(@Nullable Material residue) {
+        public @NotNull FoodBuilder residue(@Nullable Material residue) {
             this.residue = residue;
             return this;
         }

@@ -1,11 +1,11 @@
 package com.github.imdabigboss.easydatapack.api;
 
-import com.github.imdabigboss.easydatapack.api.blocks.CustomBlock;
-import com.github.imdabigboss.easydatapack.api.dimentions.CustomDimension;
-import com.github.imdabigboss.easydatapack.api.enchantments.CustomEnchantment;
-import com.github.imdabigboss.easydatapack.api.entities.CustomEntity;
 import com.github.imdabigboss.easydatapack.api.exceptions.*;
-import com.github.imdabigboss.easydatapack.api.items.CustomItem;
+import com.github.imdabigboss.easydatapack.api.types.blocks.CustomBlock;
+import com.github.imdabigboss.easydatapack.api.types.dimentions.CustomDimension;
+import com.github.imdabigboss.easydatapack.api.types.enchantments.CustomEnchantment;
+import com.github.imdabigboss.easydatapack.api.types.entities.CustomEntity;
+import com.github.imdabigboss.easydatapack.api.types.items.CustomItem;
 import org.bukkit.inventory.Recipe;
 
 import java.util.function.Consumer;

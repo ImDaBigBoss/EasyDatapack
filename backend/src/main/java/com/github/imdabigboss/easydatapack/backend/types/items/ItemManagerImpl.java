@@ -1,7 +1,7 @@
 package com.github.imdabigboss.easydatapack.backend.types.items;
 
 import com.github.imdabigboss.easydatapack.api.exceptions.CustomItemException;
-import com.github.imdabigboss.easydatapack.api.items.*;
+import com.github.imdabigboss.easydatapack.api.types.items.*;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
 import com.github.imdabigboss.easydatapack.backend.utils.GenericManager;
 import org.bukkit.ChatColor;
@@ -25,12 +25,13 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
 
 public class ItemManagerImpl extends GenericManager implements ItemManager {
-    private final Map<Integer, CustomItem> items = new HashMap<>();
+    private final Map<String, CustomItem> items = new HashMap<>();
 
     public ItemManagerImpl(EasyDatapack datapack) {
         super(datapack);
@@ -42,14 +43,15 @@ public class ItemManagerImpl extends GenericManager implements ItemManager {
         this.datapack.registerBuilder(CustomToolItem.ToolBuilder.class, CustomToolItemImpl.ToolBuilderImpl.class);
         this.datapack.registerBuilder(CustomHatItem.HatBuilder.class, CustomHatItemImpl.HatBuilderImpl.class);
         this.datapack.registerBuilder(CustomFoodItem.FoodBuilder.class, CustomFoodItemImpl.FoodBudilerImpl.class);
+        this.datapack.registerBuilder(CustomBlockPlacerItem.BlockPlacerBuilder.class, CustomBlockPlacerItemImpl.BlockPlacerBuilderImpl.class);
     }
 
     public void registerCustomItem(CustomItem item) throws CustomItemException {
-        if (this.items.containsKey(item.getCustomModelData())) {
-            throw new CustomItemException("Custom model data " + item.getCustomModelData() + " is already registered for " + item.getNamespaceKey() + "!");
+        if (this.items.containsKey(item.getNamespaceKey())) {
+            throw new CustomItemException("Item with name \"" + item.getNamespacedKey() + "\" is already registered!");
         }
 
-        this.items.put(item.getCustomModelData(), item);
+        this.items.put(item.getNamespaceKey(), item);
     }
 
     public void registerEventListeners() {
@@ -72,8 +74,13 @@ public class ItemManagerImpl extends GenericManager implements ItemManager {
 
     @Override
     public CustomItem getCustomItem(@NonNull String namespaceKey) {
+        return this.items.get(namespaceKey);
+    }
+
+    @Override
+    public @Nullable CustomItem getCustomItem(int customModelData, Material material) {
         for (CustomItem item : this.items.values()) {
-            if (item.getNamespaceKey().equals(namespaceKey)) {
+            if (item.getCustomModelData() == customModelData && item.getBaseMaterial() == material) {
                 return item;
             }
         }
@@ -82,39 +89,22 @@ public class ItemManagerImpl extends GenericManager implements ItemManager {
     }
 
     @Override
-    public CustomItem getCustomItem(int customModelData) {
-        return this.items.get(customModelData);
-    }
+    public @Nullable CustomItem getCustomItem(@NonNull ItemStack item) {
+        if (!item.hasItemMeta() || !item.getItemMeta().hasCustomModelData()) {
+            return null;
+        }
 
-    @Override
-    public ItemStack getItemStack(@NonNull String namespaceKey) {
-        CustomItem item = this.getCustomItem(namespaceKey);
-        return item == null ? null : item.getItemStack();
-    }
-
-    @Override
-    public ItemStack getItemStack(int customModelData) {
-        CustomItem item = this.getCustomItem(customModelData);
-        return item == null ? null : item.getItemStack();
+        return this.getCustomItem(item.getItemMeta().getCustomModelData(), item.getType());
     }
 
     @Override
     public boolean isCustomHat(@NonNull ItemStack item) {
-        if (!item.hasItemMeta()) {
-            return false;
-        }
-        if (!item.getItemMeta().hasCustomModelData()) {
+        CustomItem customItem = this.getCustomItem(item);
+        if (customItem == null) {
             return false;
         }
 
-        int customModelData = item.getItemMeta().getCustomModelData();
-        for (CustomItem customItem : this.items.values()) {
-            if (customItem.getCustomModelData() == customModelData && customItem instanceof CustomHatItem) {
-                return true;
-            }
-        }
-
-        return false;
+        return customItem instanceof CustomHatItem;
     }
 
     @EventHandler
@@ -126,14 +116,8 @@ public class ItemManagerImpl extends GenericManager implements ItemManager {
             return;
         }
 
-        CustomItem customEquipment = null;
-        if (equipment.hasItemMeta() && equipment.getItemMeta().hasCustomModelData()) {
-            customEquipment = this.items.get(equipment.getItemMeta().getCustomModelData());
-        }
-        CustomItem customMineral = null;
-        if (mineral.hasItemMeta() && mineral.getItemMeta().hasCustomModelData()) {
-            customMineral = this.items.get(mineral.getItemMeta().getCustomModelData());
-        }
+        CustomItem customEquipment = this.getCustomItem(equipment);
+        CustomItem customMineral = this.getCustomItem(mineral);
 
         Recipe targetRecipe = null;
         Iterator<Recipe> recipeList = this.datapack.getServer().recipeIterator();
@@ -267,21 +251,11 @@ public class ItemManagerImpl extends GenericManager implements ItemManager {
     }
 
     private boolean onInventoryClickEventInternal(Inventory inventory, ItemStack cursor, InventoryType.SlotType slotType, int slot, ItemStack current, HumanEntity whoClicked) {
-        if (inventory == null) {
+        if (inventory == null || !inventory.getType().equals(InventoryType.PLAYER) || slotType != InventoryType.SlotType.ARMOR || slot != 39) {
             return false;
         }
-        if (!inventory.getType().equals(InventoryType.PLAYER) || slotType != InventoryType.SlotType.ARMOR) {
+        if (cursor == null || !this.isCustomHat(cursor)) {
             return false;
-        }
-        if (cursor == null) {
-            return false;
-        }
-        if (!this.isCustomHat(cursor)) {
-            return false;
-        }
-
-        if (slot != 39) {
-            return true;
         }
 
         if (current == null || current.getType() == Material.AIR) {
@@ -302,14 +276,8 @@ public class ItemManagerImpl extends GenericManager implements ItemManager {
             if (event.getItem() == null) {
                 return;
             }
-            if (event.getItem().getItemMeta() == null) {
-                return;
-            }
-            if (!event.getItem().getItemMeta().hasCustomModelData()) {
-                return;
-            }
 
-            CustomItem customItem = this.items.get(event.getItem().getItemMeta().getCustomModelData());
+            CustomItem customItem = this.getCustomItem(event.getItem());
             if (customItem == null) {
                 return;
             }
@@ -345,14 +313,7 @@ public class ItemManagerImpl extends GenericManager implements ItemManager {
         if (event.getDamager() instanceof Player player) {
             ItemStack item = player.getInventory().getItemInMainHand();
 
-            if (item.getItemMeta() == null) {
-                return;
-            }
-            if (!item.getItemMeta().hasCustomModelData()) {
-                return;
-            }
-
-            CustomItem customItem = this.items.get(item.getItemMeta().getCustomModelData());
+            CustomItem customItem = this.getCustomItem(item);
             if (customItem == null) {
                 return;
             }
@@ -371,14 +332,7 @@ public class ItemManagerImpl extends GenericManager implements ItemManager {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (item.getItemMeta() == null) {
-            return;
-        }
-        if (!item.getItemMeta().hasCustomModelData()) {
-            return;
-        }
-
-        CustomItem customItem = this.items.get(item.getItemMeta().getCustomModelData());
+        CustomItem customItem = this.getCustomItem(item);
         if (customItem == null) {
             return;
         }
@@ -400,7 +354,7 @@ public class ItemManagerImpl extends GenericManager implements ItemManager {
             return;
         }
 
-        CustomItem customItem = this.items.get(item.getItemMeta().getCustomModelData());
+        CustomItem customItem = this.getCustomItem(item);
         if (customItem == null) {
             return;
         }

@@ -1,8 +1,8 @@
 package com.github.imdabigboss.easydatapack.backend.types.entities;
 
-import com.github.imdabigboss.easydatapack.api.entities.CustomEntity;
-import com.github.imdabigboss.easydatapack.api.entities.CustomEntityGoal;
-import com.github.imdabigboss.easydatapack.api.entities.model.EntityModel;
+import com.github.imdabigboss.easydatapack.api.types.entities.CustomEntity;
+import com.github.imdabigboss.easydatapack.api.types.entities.CustomEntityGoal;
+import com.github.imdabigboss.easydatapack.api.types.entities.model.EntityModel;
 import com.github.imdabigboss.easydatapack.backend.types.entities.model.EntityModelImpl;
 import com.github.imdabigboss.easydatapack.backend.utils.GenericBuilderImpl;
 import net.kyori.adventure.text.Component;

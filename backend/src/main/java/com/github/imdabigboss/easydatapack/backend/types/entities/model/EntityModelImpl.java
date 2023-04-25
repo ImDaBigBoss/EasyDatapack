@@ -1,7 +1,7 @@
 package com.github.imdabigboss.easydatapack.backend.types.entities.model;
 
-import com.github.imdabigboss.easydatapack.api.entities.model.EntityBone;
-import com.github.imdabigboss.easydatapack.api.entities.model.EntityModel;
+import com.github.imdabigboss.easydatapack.api.types.entities.model.EntityBone;
+import com.github.imdabigboss.easydatapack.api.types.entities.model.EntityModel;
 import com.github.imdabigboss.easydatapack.backend.utils.GenericBuilderImpl;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;

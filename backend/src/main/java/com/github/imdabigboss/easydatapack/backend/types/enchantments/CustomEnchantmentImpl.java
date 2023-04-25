@@ -1,7 +1,7 @@
 package com.github.imdabigboss.easydatapack.backend.types.enchantments;
 
 import com.github.imdabigboss.easydatapack.api.EasyDatapackAPI;
-import com.github.imdabigboss.easydatapack.api.enchantments.CustomEnchantment;
+import com.github.imdabigboss.easydatapack.api.types.enchantments.CustomEnchantment;
 import com.github.imdabigboss.easydatapack.api.utils.StringUtil;
 import com.github.imdabigboss.easydatapack.backend.utils.GenericBuilderImpl;
 import io.papermc.paper.enchantments.EnchantmentRarity;
@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -211,7 +211,7 @@ public class CustomEnchantmentImpl extends Enchantment implements CustomEnchantm
     }
 
     @Override
-    public int getEnchantmentLevel(ItemStack item) {
+    public int getEnchantmentLevel(@NonNull ItemStack item) {
         if (!this.hasEnchantment(item)) {
             return 0;
         }

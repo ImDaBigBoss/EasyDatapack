@@ -1,6 +1,6 @@
 package com.github.imdabigboss.easydatapack.backend.registration;
 
-import com.github.imdabigboss.easydatapack.api.items.CustomItem;
+import com.github.imdabigboss.easydatapack.api.types.items.CustomItem;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
 import org.geysermc.event.subscribe.Subscribe;
 import org.geysermc.geyser.api.GeyserApi;

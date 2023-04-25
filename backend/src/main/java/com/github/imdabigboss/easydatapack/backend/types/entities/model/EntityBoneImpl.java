@@ -1,6 +1,6 @@
 package com.github.imdabigboss.easydatapack.backend.types.entities.model;
 
-import com.github.imdabigboss.easydatapack.api.entities.model.EntityBone;
+import com.github.imdabigboss.easydatapack.api.types.entities.model.EntityBone;
 import com.github.imdabigboss.easydatapack.api.utils.math.EulerAnglef;
 import com.github.imdabigboss.easydatapack.api.utils.math.Vector3f;
 import com.github.imdabigboss.easydatapack.backend.utils.GenericBuilderImpl;

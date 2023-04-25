@@ -3,7 +3,7 @@ package com.github.imdabigboss.easydatapack.backend.types.entities;
 import com.destroystokyo.paper.entity.ai.Goal;
 import com.destroystokyo.paper.entity.ai.GoalKey;
 import com.destroystokyo.paper.entity.ai.GoalType;
-import com.github.imdabigboss.easydatapack.api.entities.CustomEntityGoal;
+import com.github.imdabigboss.easydatapack.api.types.entities.CustomEntityGoal;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Pig;
 import org.checkerframework.checker.nullness.qual.NonNull;

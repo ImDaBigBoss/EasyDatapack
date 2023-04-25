@@ -2,17 +2,18 @@ package com.github.imdabigboss.easydatapack.backend.types.entities;
 
 import com.destroystokyo.paper.entity.ai.MobGoals;
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
-import com.github.imdabigboss.easydatapack.api.entities.CustomEntity;
-import com.github.imdabigboss.easydatapack.api.entities.CustomEntityGoal;
-import com.github.imdabigboss.easydatapack.api.entities.EntityManager;
-import com.github.imdabigboss.easydatapack.api.entities.model.EntityBone;
-import com.github.imdabigboss.easydatapack.api.entities.model.EntityModel;
 import com.github.imdabigboss.easydatapack.api.exceptions.CustomEntityException;
+import com.github.imdabigboss.easydatapack.api.types.entities.CustomEntity;
+import com.github.imdabigboss.easydatapack.api.types.entities.CustomEntityGoal;
+import com.github.imdabigboss.easydatapack.api.types.entities.EntityManager;
+import com.github.imdabigboss.easydatapack.api.types.entities.model.EntityBone;
+import com.github.imdabigboss.easydatapack.api.types.entities.model.EntityModel;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
 import com.github.imdabigboss.easydatapack.backend.types.entities.model.EntityBoneImpl;
 import com.github.imdabigboss.easydatapack.backend.types.entities.model.EntityModelImpl;
 import com.github.imdabigboss.easydatapack.backend.utils.GenericManager;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Pig;
@@ -96,7 +97,7 @@ public class EntityManagerImpl extends GenericManager implements EntityManager {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (event.getItem() == null || event.getItem().getItemMeta() == null || !event.getItem().getItemMeta().hasCustomModelData()) {
+            if (event.getItem() == null || event.getItem().getItemMeta() == null || !event.getItem().getItemMeta().hasCustomModelData() || event.getItem().getType() != Material.SKELETON_SPAWN_EGG) {
                 return;
             }
             if (event.getClickedBlock() == null) {

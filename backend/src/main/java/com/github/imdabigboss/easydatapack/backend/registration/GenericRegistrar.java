@@ -1,12 +1,12 @@
 package com.github.imdabigboss.easydatapack.backend.registration;
 
 import com.github.imdabigboss.easydatapack.api.CustomAdder;
-import com.github.imdabigboss.easydatapack.api.blocks.CustomBlock;
-import com.github.imdabigboss.easydatapack.api.dimentions.CustomDimension;
-import com.github.imdabigboss.easydatapack.api.enchantments.CustomEnchantment;
-import com.github.imdabigboss.easydatapack.api.entities.CustomEntity;
 import com.github.imdabigboss.easydatapack.api.exceptions.*;
-import com.github.imdabigboss.easydatapack.api.items.CustomItem;
+import com.github.imdabigboss.easydatapack.api.types.blocks.CustomBlock;
+import com.github.imdabigboss.easydatapack.api.types.dimentions.CustomDimension;
+import com.github.imdabigboss.easydatapack.api.types.enchantments.CustomEnchantment;
+import com.github.imdabigboss.easydatapack.api.types.entities.CustomEntity;
+import com.github.imdabigboss.easydatapack.api.types.items.CustomItem;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
 import com.github.imdabigboss.easydatapack.backend.types.blocks.BlockManagerImpl;
 import com.github.imdabigboss.easydatapack.backend.types.dimensions.DimensionManagerImpl;
@@ -22,7 +22,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public abstract class GenericRegistrar implements CustomAdder {
-    private List<Consumer<CustomAdder>> customAdders = new ArrayList<>();
+    private final List<Consumer<CustomAdder>> customAdders = new ArrayList<>();
+    private boolean finalized = false;
     protected final EasyDatapack datapack;
 
     protected final BlockManagerImpl blockManager;
@@ -65,8 +66,6 @@ public abstract class GenericRegistrar implements CustomAdder {
     }
 
     protected void registerCustomComponents() {
-        this.datapack.getLogger().info("Registering custom components.");
-
         for (Consumer<CustomAdder> customAdderConsumer : this.customAdders) {
             customAdderConsumer.accept(this);
         }
@@ -76,12 +75,19 @@ public abstract class GenericRegistrar implements CustomAdder {
         this.datapack.getEnchantmentManager().registerEventListeners();
         this.datapack.getItemManager().registerEventListeners();
 
-        this.datapack.getLogger().info("Creating custom dimension worlds.");
-        this.datapack.getDimensionManager().createWorlds();
-
         this.datapack.getLogger().info("Custom component registration complete!");
 
+        if (this.datapack.getDimensionManager().getCustomDimensions().size() > 0) {
+            this.datapack.getLogger().info("Creating custom dimension worlds...");
+            this.datapack.getDimensionManager().createWorlds();
+        }
+
+        this.finalized = true;
         this.datapack.registrationComplete();
+    }
+
+    public boolean isFinalized() {
+        return this.finalized;
     }
 
     @Override

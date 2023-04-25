@@ -2,7 +2,7 @@ package com.github.imdabigboss.easydatapack.backend.types.items;
 
 import com.github.imdabigboss.easydatapack.api.EasyDatapackAPI;
 import com.github.imdabigboss.easydatapack.api.exceptions.CustomItemException;
-import com.github.imdabigboss.easydatapack.api.items.CustomItem;
+import com.github.imdabigboss.easydatapack.api.types.items.CustomItem;
 import com.github.imdabigboss.easydatapack.backend.utils.GenericBuilderImpl;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.TriState;
@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,6 +46,10 @@ public class CustomItemImpl implements CustomItem {
     protected ItemStack itemStack;
 
     protected CustomItemImpl(int customModelData, @NonNull String namespaceKey, @NonNull String name, @NonNull Material baseMaterial, boolean unbreakable, boolean hideFlags, boolean newItem, @Nullable Class<? extends Listener> eventListener, @Nullable Consumer<PlayerInteractEvent> itemUseEvent, boolean spacingBeforeLore, @Nullable String[] lore, @NonNull Map<Attribute, List<AttributeModifier>> attributeModifiers, @NonNull Map<Enchantment, Integer> enchantments, @NonNull List<Enchantment> allowedEnchantments, @NonNull List<Enchantment> forbiddenEnchantments) {
+        if (customModelData > 9999999) {
+            throw new IllegalStateException("CustomModelData cannot be greater than 9999999");
+        }
+
         this.customModelData = customModelData;
         this.namespaceKey = namespaceKey;
         this.name = name;
@@ -202,7 +206,7 @@ public class CustomItemImpl implements CustomItem {
     }
 
     @Override
-    public @NonNull ItemStack getItemStack() {
+    public @NonNull ItemStack createItemStack() {
         return this.itemStack;
     }
 

@@ -1,6 +1,6 @@
 package com.github.imdabigboss.easydatapack.backend.textures;
 
-import com.github.imdabigboss.easydatapack.api.blocks.CustomBlock;
+import com.github.imdabigboss.easydatapack.api.types.blocks.CustomBlock;
 
 import java.util.ArrayList;
 import java.util.List;

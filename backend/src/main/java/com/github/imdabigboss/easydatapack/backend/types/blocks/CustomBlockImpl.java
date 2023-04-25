@@ -1,19 +1,17 @@
 package com.github.imdabigboss.easydatapack.backend.types.blocks;
 
-import com.github.imdabigboss.easydatapack.api.blocks.CustomBlock;
+import com.github.imdabigboss.easydatapack.api.types.blocks.CustomBlock;
+import com.github.imdabigboss.easydatapack.api.types.items.CustomBlockPlacerItem;
 import com.github.imdabigboss.easydatapack.backend.utils.GenericBuilderImpl;
-import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class CustomBlockImpl implements CustomBlock {
     private final String name;
     private final String namespaceKey;
-    private final int customModelData;
+    private final CustomBlockPlacerItem placerItem;
     private final boolean up;
     private final boolean down;
     private final boolean north;
@@ -25,10 +23,10 @@ public class CustomBlockImpl implements CustomBlock {
     private final int dropAmount;
     private final int dropExperience;
 
-    private CustomBlockImpl(@NonNull String name, @NonNull String namespaceKey, int customModelData, boolean up, boolean down, boolean north, boolean east, boolean south, boolean west, CustomBlock.@NonNull Parent parent, @Nullable Material dropMaterial, int dropAmount, int dropExperience) {
+    private CustomBlockImpl(@NonNull String name, @NonNull String namespaceKey, @NonNull CustomBlockPlacerItem placerItem, boolean up, boolean down, boolean north, boolean east, boolean south, boolean west, CustomBlock.@NonNull Parent parent, @Nullable Material dropMaterial, int dropAmount, int dropExperience) {
         this.name = name;
         this.namespaceKey = namespaceKey;
-        this.customModelData = customModelData;
+        this.placerItem = placerItem;
         this.up = up;
         this.down = down;
         this.north = north;
@@ -52,8 +50,8 @@ public class CustomBlockImpl implements CustomBlock {
     }
 
     @Override
-    public int getCustomModelData() {
-        return this.customModelData;
+    public @NonNull CustomBlockPlacerItem getPlacerItem() {
+        return this.placerItem;
     }
 
     @Override
@@ -107,21 +105,9 @@ public class CustomBlockImpl implements CustomBlock {
     }
 
     @Override
-    public @NonNull ItemStack createBlockItem() {
-        ItemStack item = new ItemStack(Material.CLOCK, 1);
-
-        ItemMeta meta = item.getItemMeta();
-        meta.setCustomModelData(this.customModelData);
-        meta.displayName(Component.text(ChatColor.RESET.toString() + ChatColor.WHITE + this.name));
-        item.setItemMeta(meta);
-
-        return item;
-    }
-
-    @Override
     public @NonNull ItemStack createDrop() {
         if (this.dropMaterial == null) {
-            ItemStack item = this.createBlockItem();
+            ItemStack item = this.placerItem.createItemStack();
             item.setAmount(this.dropAmount);
             return item;
         } else {
@@ -141,7 +127,7 @@ public class CustomBlockImpl implements CustomBlock {
     public static class BuilderImpl implements Builder, GenericBuilderImpl {
         private final String name;
         private final String namespaceKey;
-        private final int customModelData;
+        private final CustomBlockPlacerItem placerItem;
         private final boolean up;
         private final boolean down;
         private final boolean north;
@@ -154,10 +140,10 @@ public class CustomBlockImpl implements CustomBlock {
         private int dropAmount = 1;
         private int dropExperience = 0;
 
-        public BuilderImpl(@NonNull String name, @NonNull String namespaceKey, int customModelData, boolean up, boolean down, boolean north, boolean east, boolean south, boolean west, @NonNull Parent parent) {
+        public BuilderImpl(@NonNull String name, @NonNull String namespaceKey, @NonNull CustomBlockPlacerItem placerItem, boolean up, boolean down, boolean north, boolean east, boolean south, boolean west, @NonNull Parent parent) {
             this.name = name;
             this.namespaceKey = namespaceKey;
-            this.customModelData = customModelData;
+            this.placerItem = placerItem;
             this.up = up;
             this.down = down;
             this.north = north;
@@ -187,7 +173,7 @@ public class CustomBlockImpl implements CustomBlock {
 
         @Override
         public @NonNull CustomBlock build() {
-            return new CustomBlockImpl(this.name, this.namespaceKey, this.customModelData, this.up, this.down, this.north, this.east, this.south, this.west, this.parent, this.dropMaterial, this.dropAmount, this.dropExperience);
+            return new CustomBlockImpl(this.name, this.namespaceKey, this.placerItem, this.up, this.down, this.north, this.east, this.south, this.west, this.parent, this.dropMaterial, this.dropAmount, this.dropExperience);
         }
     }
 }

@@ -1,8 +1,10 @@
 package com.github.imdabigboss.easydatapack.backend.types.blocks;
 
-import com.github.imdabigboss.easydatapack.api.blocks.BlockManager;
-import com.github.imdabigboss.easydatapack.api.blocks.CustomBlock;
+import com.github.imdabigboss.easydatapack.api.types.blocks.BlockManager;
+import com.github.imdabigboss.easydatapack.api.types.blocks.CustomBlock;
+import com.github.imdabigboss.easydatapack.api.types.items.CustomItem;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
+import com.github.imdabigboss.easydatapack.backend.types.items.CustomBlockPlacerItemImpl;
 import com.github.imdabigboss.easydatapack.backend.utils.GenericManager;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -26,11 +28,12 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.BoundingBox;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.*;
 
 public class BlockManagerImpl extends GenericManager implements BlockManager {
-    private final Map<Integer, CustomBlock> blocks = new HashMap<>();
+    private final List<CustomBlock> blocks = new ArrayList<>();
     private final Map<Location, CustomBlock> customPlacedBlocks = new HashMap<>();
     private final Map<UUID, Long> lastPlaceEvent = new HashMap<>();
 
@@ -44,19 +47,20 @@ public class BlockManagerImpl extends GenericManager implements BlockManager {
     }
 
     public void registerCustomBlock(CustomBlock block) {
-        this.blocks.put(block.getCustomModelData(), block);
+        ((CustomBlockPlacerItemImpl) block.getPlacerItem()).setPlacedBlock(block);
+        this.blocks.add(block);
     }
 
     @Override
     public @NonNull List<CustomBlock> getCustomBlocks() {
-        return new ArrayList<>(this.blocks.values());
+        return new ArrayList<>(this.blocks);
     }
 
     @Override
-    public CustomBlock blockToCustomBlock(@NonNull Block block) {
+    public @Nullable CustomBlock blockToCustomBlock(@NonNull Block block) {
         MultipleFacing multipleFacing = (MultipleFacing) block.getBlockData();
 
-        for (CustomBlock customBlock : this.blocks.values()) {
+        for (CustomBlock customBlock : this.blocks) {
             if (customBlock.getMaterial() == block.getType() &&
                     customBlock.isUp() == multipleFacing.hasFace(BlockFace.UP) &&
                     customBlock.isDown() == multipleFacing.hasFace(BlockFace.DOWN) &&
@@ -92,7 +96,7 @@ public class BlockManagerImpl extends GenericManager implements BlockManager {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getClickedBlock() == null || event.getHand() == null) {
             return;
         }
-        if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasCustomModelData()) {
+        if (event.getItem() == null) {
             return;
         }
 
@@ -101,10 +105,11 @@ public class BlockManagerImpl extends GenericManager implements BlockManager {
             return;
         }
 
-        CustomBlock customBlock = this.blocks.get(event.getItem().getItemMeta().getCustomModelData());
-        if (customBlock == null) {
+        CustomItem customItem = this.datapack.getItemManager().getCustomItem(event.getItem());
+        if (!(customItem instanceof CustomBlockPlacerItemImpl)) {
             return;
         }
+        CustomBlock customBlock = ((CustomBlockPlacerItemImpl) customItem).getPlacedBlock();
 
         if (block.getWorld().getNearbyEntities(new BoundingBox(block.getX(), block.getY(), block.getZ(), block.getX() + 1, block.getY() + 1, block.getZ() + 1)).size() > 0) {
             return;

@@ -1,10 +1,10 @@
 package com.github.imdabigboss.easydatapack.backend.types.enchantments;
 
-import com.github.imdabigboss.easydatapack.api.enchantments.CustomEnchantment;
-import com.github.imdabigboss.easydatapack.api.enchantments.EnchantmentManager;
 import com.github.imdabigboss.easydatapack.api.exceptions.CustomEnchantmentException;
-import com.github.imdabigboss.easydatapack.api.items.CustomItem;
-import com.github.imdabigboss.easydatapack.api.items.CustomToolItem;
+import com.github.imdabigboss.easydatapack.api.types.enchantments.CustomEnchantment;
+import com.github.imdabigboss.easydatapack.api.types.enchantments.EnchantmentManager;
+import com.github.imdabigboss.easydatapack.api.types.items.CustomItem;
+import com.github.imdabigboss.easydatapack.api.types.items.CustomToolItem;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
 import com.github.imdabigboss.easydatapack.backend.utils.GenericManager;
 import com.github.imdabigboss.easydatapack.backend.utils.LoreUtil;
@@ -272,10 +272,7 @@ public class EnchantmentManagerImpl extends GenericManager implements Enchantmen
             result = first.clone();
         }
 
-        CustomItem customFirst = null;
-        if (first.hasItemMeta() && first.getItemMeta().hasCustomModelData()) {
-            customFirst = this.datapack.getItemManager().getCustomItem(first.getItemMeta().getCustomModelData());
-        }
+        CustomItem customFirst = this.datapack.getItemManager().getCustomItem(first);
 
         Map<Enchantment, Integer> existingEnchantments = this.getItemEnchants(first);
         Map<Enchantment, Integer> appliedEnchantments = new HashMap<>();

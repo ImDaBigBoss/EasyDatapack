@@ -1,6 +1,6 @@
 package com.github.imdabigboss.easydatapack.backend.types.items;
 
-import com.github.imdabigboss.easydatapack.api.items.CustomHatItem;
+import com.github.imdabigboss.easydatapack.api.types.items.CustomHatItem;
 import com.github.imdabigboss.easydatapack.backend.utils.GenericBuilderImpl;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -9,7 +9,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
 import java.util.Map;

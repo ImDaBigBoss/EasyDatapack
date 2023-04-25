@@ -5,7 +5,6 @@ import com.github.imdabigboss.easydatapack.api.EasyDatapackAPI;
 import com.github.imdabigboss.easydatapack.api.EasyDatapackBase;
 import com.github.imdabigboss.easydatapack.api.textures.TexturePackManager;
 import com.github.imdabigboss.easydatapack.api.utils.GenericBuilder;
-import com.github.imdabigboss.easydatapack.api.utils.PacketUtil;
 import com.github.imdabigboss.easydatapack.api.utils.YmlConfig;
 import com.github.imdabigboss.easydatapack.backend.registration.DefaultRegistrar;
 import com.github.imdabigboss.easydatapack.backend.registration.GenericRegistrar;
@@ -34,7 +33,6 @@ import java.util.logging.Logger;
 public class EasyDatapack extends JavaPlugin implements EasyDatapackBase {
     private Logger log;
     private YmlConfig config;
-    private PacketUtil packetUtil;
 
     private RecipeManagerImpl recipeManager;
     private BlockManagerImpl blockManager;
@@ -56,7 +54,6 @@ public class EasyDatapack extends JavaPlugin implements EasyDatapackBase {
         this.log = this.getLogger();
         this.config = new YmlConfigImpl(this);
         this.config.saveConfig();
-        this.packetUtil = new PacketUtil();
 
         this.recipeManager = new RecipeManagerImpl(this);
         this.blockManager = new BlockManagerImpl(this);
@@ -90,6 +87,7 @@ public class EasyDatapack extends JavaPlugin implements EasyDatapackBase {
         this.itemManager.registerListener();
         this.mapManager.registerListener();
         this.entityManager.registerListener();
+        this.texturePackManager.registerListener();
 
         this.componentRegistrar.onEnable();
         this.log.info("EasyDatapack successfully enabled.");
@@ -103,7 +101,7 @@ public class EasyDatapack extends JavaPlugin implements EasyDatapackBase {
 
     @Override
     public void registerCustomAdder(@NonNull Consumer<CustomAdder> customAdder) {
-        if (this.componentRegistrar == null) {
+        if (this.componentRegistrar.isFinalized()) {
             throw new IllegalStateException("Custom adders can no longer be registered, the plugin has already registered all the custom components");
         }
 
@@ -113,18 +111,11 @@ public class EasyDatapack extends JavaPlugin implements EasyDatapackBase {
     public void registrationComplete() {
         this.texturePackManager.registrationComplete();
         OverridableBlockstates.garbageCollect();
-
-        this.componentRegistrar = null;
     }
 
     @Override
     public @NonNull YmlConfig getAPIConfig() {
         return this.config;
-    }
-
-    @Override
-    public @NonNull PacketUtil getPacketUtil() {
-        return this.packetUtil;
     }
 
     public void registerBuilder(@NonNull Class<? extends GenericBuilder<?>> type, @NonNull Class<? extends GenericBuilderImpl> builder) {
