@@ -37,7 +37,7 @@ public interface CustomToolItem extends CustomItem {
      * @return the builder
      */
     static CustomToolItem.ToolBuilder builder(@NonNull String namespaceKey, @NonNull String name, @NonNull Material baseMaterial, @NonNull Path texture, double attackDamage, double attackSpeed) {
-        int customModelData = EasyDatapackAPI.getTexturePackManager().registerItemTexture(baseMaterial, true, false, texture);
+        int customModelData = EasyDatapackAPI.getTexturePackManager().registerItemTexture(namespaceKey, baseMaterial, true, false, texture);
         return builder(customModelData, namespaceKey, name, baseMaterial, attackDamage, attackSpeed);
     }
 

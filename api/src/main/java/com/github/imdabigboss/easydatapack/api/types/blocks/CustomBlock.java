@@ -34,32 +34,16 @@ public interface CustomBlock {
     }
 
     /**
-     * Creates a new custom block builder and registers the textures to the texture pack.
-     * @param name the name of the block
-     * @param namespaceKey the namespace key of the block
-     * @param texture the path to the block texture to register
-     * @param itemTexture the path to the item texture of the block item to register
-     * @return the builder
-     */
-    static Builder builder(@NonNull String name, @NonNull String namespaceKey, @NonNull CustomBlockPlacerItem placerItem, @NonNull Path texture, @NonNull Path itemTexture) {
-        return builder(name, namespaceKey, placerItem, EasyDatapackAPI.getTexturePackManager().registerBlockTexture(texture, itemTexture));
-    }
-
-    /**
      * Creates a new custom block builder and registers the texture to the texture pack.
      * @param name the name of the block
      * @param namespaceKey the namespace key of the block
-     * @param texture the path to the block and item texture to register
+     * @param texture the path to the block texture to register
      * @return the builder
      */
     static Builder builder(@NonNull String name, @NonNull String namespaceKey, @NonNull CustomBlockPlacerItem placerItem, @NonNull Path texture) {
-        return builder(name, namespaceKey, placerItem, EasyDatapackAPI.getTexturePackManager().registerBlockTexture(texture, texture));
-    }
-
-    private static Builder builder(@NonNull String name, @NonNull String namespaceKey, @NonNull CustomBlockPlacerItem placerItem, TexturePackManager.@NonNull BlockData data) {
+        TexturePackManager.BlockData data = EasyDatapackAPI.getTexturePackManager().registerBlockTexture(namespaceKey, texture);
         return builder(name, namespaceKey, placerItem, data.up(), data.down(), data.north(), data.east(), data.south(), data.west(), data.parent());
     }
-
 
     /**
      * Gets the name of the block.
@@ -156,8 +140,8 @@ public interface CustomBlock {
      */
     enum Parent {
         MUSHROOM_STEM,
-        BROWN_MUSHROOM,
-        RED_MUSHROOM
+        BROWN_MUSHROOM_BLOCK,
+        RED_MUSHROOM_BLOCK
     }
 
     /**

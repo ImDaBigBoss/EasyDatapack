@@ -31,7 +31,7 @@ public interface CustomHatItem extends CustomItem {
      * @return the builder
      */
     static HatBuilder builder(@NonNull String namespaceKey, @NonNull String name, @NonNull Material baseMaterial, @NonNull Path texture) {
-        int customModelData = EasyDatapackAPI.getTexturePackManager().registerItemTexture(baseMaterial, texture);
+        int customModelData = EasyDatapackAPI.getTexturePackManager().registerItemTexture(namespaceKey, baseMaterial, texture);
         return  builder(customModelData, namespaceKey, name, baseMaterial);
     }
 

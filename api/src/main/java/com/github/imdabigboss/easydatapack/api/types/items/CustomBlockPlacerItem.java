@@ -35,7 +35,7 @@ public interface CustomBlockPlacerItem extends CustomItem {
      * @return the builder
      */
     static BlockPlacerBuilder builder(@NonNull String namespaceKey, @NonNull String name, @NonNull Material baseMaterial, @NonNull Path texture) {
-        int customModelData = EasyDatapackAPI.getTexturePackManager().registerItemTexture(baseMaterial, false, true, texture);
+        int customModelData = EasyDatapackAPI.getTexturePackManager().registerItemTexture(namespaceKey, baseMaterial, false, true, texture);
         return builder(customModelData, namespaceKey, name, baseMaterial);
     }
 

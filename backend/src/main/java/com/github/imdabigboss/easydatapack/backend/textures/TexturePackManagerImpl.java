@@ -6,11 +6,13 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.imdabigboss.easydatapack.api.exceptions.EasyDatapackException;
 import com.github.imdabigboss.easydatapack.api.textures.TexturePackManager;
+import com.github.imdabigboss.easydatapack.api.utils.YmlConfig;
 import com.github.imdabigboss.easydatapack.backend.EasyDatapack;
 import com.github.imdabigboss.easydatapack.backend.utils.FileUtils;
 import com.github.imdabigboss.easydatapack.backend.utils.GenericManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -26,6 +28,8 @@ import java.util.*;
 import java.util.function.Function;
 
 public class TexturePackManagerImpl extends GenericManager implements TexturePackManager {
+    private final YmlConfig config;
+
     private boolean enabled = false;
     private boolean allowRegistering = true;
     private boolean required = false;
@@ -36,13 +40,32 @@ public class TexturePackManagerImpl extends GenericManager implements TexturePac
 
     private final List<Path> mergePacks = new ArrayList<>();
 
-    private final Map<Material, Integer> itemCounts = new HashMap<>();
-    private final List<ItemData> itemData = new ArrayList<>();
-    private final List<BlockData> blockData = new ArrayList<>();
+    private final Map<String, Integer> reservedItemIDs = new HashMap<>();
+    private final Map<String, Integer> reservedBlockIDs = new HashMap<>();
+
+    private final Map<Material, Integer> currentItemIDs = new HashMap<>();
+    private int currentBlockID = 0;
+    private final HashMap<String, ItemData> itemData = new HashMap<>();
+    private final HashMap<String, BlockData> blockData = new HashMap<>();
 
     public TexturePackManagerImpl(EasyDatapack datapack) {
         super(datapack);
         OverridableBlockstates.init();
+
+        this.config = datapack.getAPIConfig();
+        MemorySection reserved = (MemorySection) this.config.getConfig().get("reserved.items");
+        if (reserved != null) {
+            for (String entry : reserved.getKeys(false)) {
+                this.reservedItemIDs.put(entry, reserved.getInt(entry));
+            }
+        }
+
+        reserved = (MemorySection) this.config.getConfig().get("reserved.blocks");
+        if (reserved != null) {
+            for (String entry : reserved.getKeys(false)) {
+                this.reservedBlockIDs.put(entry, reserved.getInt(entry));
+            }
+        }
     }
 
     @Override
@@ -81,53 +104,85 @@ public class TexturePackManagerImpl extends GenericManager implements TexturePac
     }
 
     @Override
-    public int registerItemTexture(@NonNull Material material, boolean handheld, boolean blockPlacer, @Nullable Path texture) {
+    public int registerItemTexture(@NonNull String namespaceKey, @NonNull Material material, boolean handheld, boolean blockPlacer, @Nullable Path texture) {
         this.checkRegistration();
 
+        if (this.itemData.containsKey(namespaceKey)) {
+            throw new IllegalStateException("Another item has the same namespace key, cannot register the same item texture twice.");
+        }
+
         int cmd;
-        if (!this.itemCounts.containsKey(material)) {
-            cmd = 1;
-            this.itemCounts.put(material, 1);
+        if (this.reservedItemIDs.containsKey(namespaceKey)) {
+            cmd = this.reservedItemIDs.get(namespaceKey);
         } else {
-            cmd = this.itemCounts.get(material) + 1;
-            this.itemCounts.replace(material, cmd);
+            if (!this.currentItemIDs.containsKey(material)) {
+                cmd = 1;
+                this.currentItemIDs.put(material, 1);
+            } else {
+                cmd = this.currentItemIDs.get(material) + 1;
+            }
+
+            while (this.reservedItemIDs.containsValue(cmd)) { //TODO: Make a better and efficient way to do this, it must take materials into account
+                cmd++;
+            }
+            if (cmd > 9999999) {
+                throw new IllegalStateException("Cannot register more than 9999999 textures for a single item.");
+            }
+
+            this.currentItemIDs.replace(material, cmd);
+
+            this.config.getConfig().set("reserved.items." + namespaceKey, cmd);
+            this.config.saveConfig();
         }
 
-        if (cmd > 9999999) {
-            this.itemCounts.replace(material, 9999999);
-            throw new IllegalStateException("Cannot register more than 9999999 textures for a single item.");
-        }
-
-        this.itemData.add(new ItemData(cmd, material, handheld, blockPlacer, texture));
+        this.itemData.put(namespaceKey, new ItemData(cmd, material, handheld, blockPlacer, texture));
 
         return cmd;
     }
 
     @Override
-    public int reserveItemCMD(@NonNull Material material) {
-        return this.registerItemTexture(material, null);
+    public int reserveItemCMD(@NonNull String namespaceKey, @NonNull Material material) {
+        return this.registerItemTexture(namespaceKey, material, null);
     }
 
     @Override
-    public TexturePackManager.BlockData registerBlockTexture(@Nullable Path texture, @Nullable Path itemTexture) {
+    public TexturePackManager.BlockData registerBlockTexture(@NonNull String namespaceKey, @Nullable Path texture) {
         this.checkRegistration();
 
-        int blockId = this.blockData.size() + 1;
-        if (blockId > OverridableBlockstates.availableStates.size()) {
-            throw new IllegalStateException("Cannot register more block textures than available blockstates.");
+        if (this.blockData.containsKey(namespaceKey)) {
+            throw new IllegalStateException("Another block has the same namespace key, cannot register the same block texture twice.");
+        }
+
+        int blockId;
+        if (this.reservedBlockIDs.containsKey(namespaceKey)) {
+            blockId = this.reservedBlockIDs.get(namespaceKey);
+        } else {
+            blockId = this.currentBlockID + 1;
+
+            while (this.reservedBlockIDs.containsValue(blockId)) {
+                blockId++;
+            }
+            if (blockId > OverridableBlockstates.availableStates.size()) {
+                throw new IllegalStateException("Cannot register more block textures than available blockstates.");
+            }
+
+            this.currentBlockID = blockId;
+
+            this.config.getConfig().set("reserved.blocks." + namespaceKey, blockId);
+            this.config.saveConfig();
         }
 
         OverridableBlockstates.Blockstate blockstate = OverridableBlockstates.availableStates.get(blockId - 1);
         TexturePackManager.BlockData blockData = new TexturePackManager.BlockData(blockstate.up(), blockstate.down(), blockstate.north(), blockstate.east(), blockstate.south(), blockstate.west(), blockstate.parent());
 
-        this.blockData.add(new BlockData(blockData, texture));
+        this.blockData.put(namespaceKey, new BlockData(blockData, texture));
 
         return blockData;
     }
 
     @Override
-    public TexturePackManager.BlockData reserveBlockstate() {
-        return this.registerBlockTexture(null, null);
+    public TexturePackManager.BlockData reserveBlockstate(@NonNull String namespaceKey) {
+        return this.registerBlockTexture(namespaceKey, null);
     }
 
     private void generatePack(Path packFolder) throws IOException, EasyDatapackException {
@@ -175,7 +230,7 @@ public class TexturePackManagerImpl extends GenericManager implements TexturePac
 
         ObjectMapper mapper = new ObjectMapper();
 
-        for (ItemData item : this.itemData) {
+        for (ItemData item : this.itemData.values()) {
             if (item.texture() == null) {
                 continue;
             }
@@ -315,10 +370,59 @@ public class TexturePackManagerImpl extends GenericManager implements TexturePac
             Files.copy(item.texture(), customTexture);
         }
 
-        for (BlockData block : this.blockData) {
+        int index = 1;
+        for (BlockData block : this.blockData.values()) {
             if (block.texture() == null) {
                 continue;
             }
+
+            TexturePackManager.BlockData data = block.blockData();
+            String packPath = "block/custom/block_" + index++;
+
+            Path blockstate = assetPath.resolve("blockstates").resolve(data.parent().name().toLowerCase(Locale.ROOT) + ".json");
+            ObjectNode root = (ObjectNode) mapper.readTree(blockstate.toFile());
+
+            //Find the correct variant with data. up, down, etc.
+            //multipart is part of root, it is an array
+            //the array contains the following structure: {"when": {"down": BOOL, "east": BOOL, "north": BOOL, "south": BOOL, "up": BOOL, "west": BOOL}, "apply": {"model": "PATH"}}
+            //we need to find the correct variant, and then change the model path
+
+            ArrayNode multipart = (ArrayNode) root.get("multipart");
+            for (JsonNode node : multipart) {
+                ObjectNode variant = (ObjectNode) node;
+                ObjectNode when = (ObjectNode) variant.get("when");
+                if (when.get("up").asBoolean() == data.up() &&
+                        when.get("down").asBoolean() == data.down() &&
+                        when.get("north").asBoolean() == data.north() &&
+                        when.get("south").asBoolean() == data.south() &&
+                        when.get("east").asBoolean() == data.east() &&
+                        when.get("west").asBoolean() == data.west()) {
+                    ObjectNode apply = (ObjectNode) variant.get("apply");
+                    apply.remove("model");
+                    apply.put("model", packPath);
+                    break;
+                }
+            }
+            mapper.writerWithDefaultPrettyPrinter().writeValue(blockstate.toFile(), root);
+
+            Path customModel = modelsPath.resolve(packPath + ".json");
+            if (Files.exists(customModel)) {
+                Files.delete(customModel);
+            }
+
+            String content = "{\n" + //TODO: Should probably also support different textures per side
+                    "  \"parent\": \"block/cube_all\",\n" +
+                    "  \"textures\": {\n" +
+                    "    \"all\": \"" + packPath + "\"\n" +
+                    "  }\n" +
+                    "}";
+            Files.writeString(customModel, content, StandardCharsets.UTF_8, StandardOpenOption.CREATE_NEW);
+
+            Path customTexture = texturesPath.resolve(packPath + ".png");
+            if (Files.exists(customTexture)) {
+                Files.delete(customTexture);
+            }
+            Files.copy(block.texture(), customTexture);
         }
 
         FileUtils.deleteFolder(defaultModels);
@@ -367,6 +471,8 @@ public class TexturePackManagerImpl extends GenericManager implements TexturePac
 
             this.texturePackHash = FileUtils.sha1Hash(zipPath);
             this.texturePackUrl = this.webUpload.apply(zipPath);
+
+            Files.delete(zipPath);
         } catch (Exception e) {
             this.datapack.getLogger().severe("Failed to finalise the texture pack generation.");
             e.printStackTrace();
@@ -375,6 +481,13 @@ public class TexturePackManagerImpl extends GenericManager implements TexturePac
         }
 
         this.datapack.getLogger().info("Texture pack generation complete. It will be sent to players when they join the server.");
+
+        this.reservedItemIDs.clear();
+        this.reservedBlockIDs.clear();
+        this.currentItemIDs.clear();
+        this.currentBlockID = 0;
+        this.itemData.clear();
+        this.blockData.clear();
     }
 
     @EventHandler

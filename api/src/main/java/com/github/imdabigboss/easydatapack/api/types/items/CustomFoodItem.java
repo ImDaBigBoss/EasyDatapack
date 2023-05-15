@@ -32,7 +32,7 @@ public interface CustomFoodItem extends CustomItem {
      * @return the builder
      */
     static CustomFoodItem.FoodBuilder builder(@NonNull String namespaceKey, @NonNull String name, @NonNull Material baseMaterial, @NonNull Path texture, int nutrition, float saturation) {
-        int customModelData = EasyDatapackAPI.getTexturePackManager().registerItemTexture(baseMaterial, texture);
+        int customModelData = EasyDatapackAPI.getTexturePackManager().registerItemTexture(namespaceKey, baseMaterial, texture);
         return builder(customModelData, namespaceKey, name, baseMaterial, nutrition, saturation);
     }
 

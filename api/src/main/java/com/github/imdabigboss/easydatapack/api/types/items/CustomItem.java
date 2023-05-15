@@ -43,7 +43,7 @@ public interface CustomItem {
      * @return the builder
      */
     static CustomItem.Builder builder(@NonNull String namespaceKey, @NonNull String name, @NonNull Material baseMaterial, @NonNull Path texture) {
-        int customModelData = EasyDatapackAPI.getTexturePackManager().registerItemTexture(baseMaterial, texture);
+        int customModelData = EasyDatapackAPI.getTexturePackManager().registerItemTexture(namespaceKey, baseMaterial, texture);
         return builder(customModelData, namespaceKey, name, baseMaterial);
     }
 

@@ -25,7 +25,7 @@ public interface CustomEntity {
     }
 
     static Builder builder(@NonNull String name, @NonNull String namespaceKey, @NonNull EntityModel model, @NonNull Path eggTexture) {
-        int eggCustomModelData = EasyDatapackAPI.getTexturePackManager().registerItemTexture(Material.SKELETON_SPAWN_EGG, eggTexture);
+        int eggCustomModelData = EasyDatapackAPI.getTexturePackManager().registerItemTexture(namespaceKey, Material.SKELETON_SPAWN_EGG, eggTexture);
         return builder(name, namespaceKey, eggCustomModelData, model);
     }
 

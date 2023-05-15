@@ -41,37 +41,40 @@ public interface TexturePackManager {
 
     /**
      * Registers a custom item texture for the given material in the texture pack.
+     * @param namespaceKey used to make sure that if you add an item, the IDs stay the same
      * @param material the material to register the texture for
      * @param handheld whether the item is held like a tool
      * @param texture the path to the texture to register
      * @return the custom model data of the item
      */
-    int registerItemTexture(@NonNull Material material, boolean handheld, boolean blockPlacer, @Nullable Path texture);
+    int registerItemTexture(@NonNull String namespaceKey, @NonNull Material material, boolean handheld, boolean blockPlacer, @Nullable Path texture);
 
-    default int registerItemTexture(@NonNull Material material, @Nullable Path texture) {
-        return registerItemTexture(material, false, false, texture);
+    default int registerItemTexture(@NonNull String namespaceKey, @NonNull Material material, @Nullable Path texture) {
+        return registerItemTexture(namespaceKey, material, false, false, texture);
     }
 
     /**
      * Reserves a custom model data ID for the given material in the texture pack.
+     * @param namespaceKey used to make sure that if you add an item, the IDs stay the same
      * @param material the material to reserve the custom model data for
      * @return the custom model data of the reserved item
      */
-    int reserveItemCMD(@NonNull Material material);
+    int reserveItemCMD(@NonNull String namespaceKey, @NonNull Material material);
 
     /**
      * Registers a custom block texture for the given material in the texture pack.
+     * @param namespaceKey used to make sure that if you add an item, the IDs stay the same
      * @param texture the path to the texture to register
-     * @param itemTexture the path to the block item texture to register
      * @return the block data of the block
      */
-    BlockData registerBlockTexture(@Nullable Path texture, @Nullable Path itemTexture);
+    BlockData registerBlockTexture(@NonNull String namespaceKey, @Nullable Path texture);
 
     /**
      * Reserves a block state that can be used for a custom block registration.
+     * @param namespaceKey used to make sure that if you add an item, the IDs stay the same
      * @return the block data of the reserved block
      */
-    BlockData reserveBlockstate();
+    BlockData reserveBlockstate(@NonNull String namespaceKey);
 
     /**
      * Block data for a custom block registration

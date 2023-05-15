@@ -119,8 +119,8 @@ public class CustomBlockImpl implements CustomBlock {
     public @NonNull Material getMaterial() {
         return switch (this.parent) {
             case MUSHROOM_STEM -> Material.MUSHROOM_STEM;
-            case BROWN_MUSHROOM -> Material.BROWN_MUSHROOM;
-            case RED_MUSHROOM -> Material.RED_MUSHROOM;
+            case BROWN_MUSHROOM_BLOCK -> Material.BROWN_MUSHROOM;
+            case RED_MUSHROOM_BLOCK -> Material.RED_MUSHROOM;
         };
     }
 
