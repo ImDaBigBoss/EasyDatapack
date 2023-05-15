@@ -220,7 +220,6 @@ public final class NBTOutputStream implements Closeable {
 	/**
 	 * Writes a <code>TAG_Empty</code> tag.
 	 * @param tag The tag.
-	 * @throws IOException if an I/O error occurs.
 	 */
 	private void writeEndTagPayload(EndTag tag) {
 		/* empty */

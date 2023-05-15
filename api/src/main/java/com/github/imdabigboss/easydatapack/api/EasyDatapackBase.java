@@ -1,7 +1,14 @@
 package com.github.imdabigboss.easydatapack.api;
 
-import com.github.imdabigboss.easydatapack.api.managers.*;
-import com.github.imdabigboss.easydatapack.api.utils.PacketUtil;
+import com.github.imdabigboss.easydatapack.api.textures.TexturePackManager;
+import com.github.imdabigboss.easydatapack.api.types.blocks.BlockManager;
+import com.github.imdabigboss.easydatapack.api.types.dimentions.DimensionManager;
+import com.github.imdabigboss.easydatapack.api.types.enchantments.EnchantmentManager;
+import com.github.imdabigboss.easydatapack.api.types.entities.EntityManager;
+import com.github.imdabigboss.easydatapack.api.types.items.ItemManager;
+import com.github.imdabigboss.easydatapack.api.types.maps.MapManager;
+import com.github.imdabigboss.easydatapack.api.types.recipies.RecipeManager;
+import com.github.imdabigboss.easydatapack.api.utils.GenericBuilder;
 import com.github.imdabigboss.easydatapack.api.utils.YmlConfig;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -15,7 +22,7 @@ public interface EasyDatapackBase {
 
     @NonNull YmlConfig getAPIConfig();
 
-    @NonNull PacketUtil getPacketUtil();
+    @NonNull GenericBuilder<?> createBuilder(@NonNull Class<? extends GenericBuilder<?>> type, @NonNull Object... args);
 
     @NonNull RecipeManager getRecipeManager();
 
@@ -28,4 +35,8 @@ public interface EasyDatapackBase {
     @NonNull ItemManager getItemManager();
 
     @NonNull MapManager getMapManager();
+
+    @NonNull EntityManager getEntityManager();
+
+    @NonNull TexturePackManager getTexturePackManager();
 }

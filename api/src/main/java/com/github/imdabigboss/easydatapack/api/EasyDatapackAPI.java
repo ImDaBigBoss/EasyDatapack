@@ -1,7 +1,14 @@
 package com.github.imdabigboss.easydatapack.api;
 
-import com.github.imdabigboss.easydatapack.api.managers.*;
-import com.github.imdabigboss.easydatapack.api.utils.PacketUtil;
+import com.github.imdabigboss.easydatapack.api.textures.TexturePackManager;
+import com.github.imdabigboss.easydatapack.api.types.blocks.BlockManager;
+import com.github.imdabigboss.easydatapack.api.types.dimentions.DimensionManager;
+import com.github.imdabigboss.easydatapack.api.types.enchantments.EnchantmentManager;
+import com.github.imdabigboss.easydatapack.api.types.entities.EntityManager;
+import com.github.imdabigboss.easydatapack.api.types.items.ItemManager;
+import com.github.imdabigboss.easydatapack.api.types.maps.MapManager;
+import com.github.imdabigboss.easydatapack.api.types.recipies.RecipeManager;
+import com.github.imdabigboss.easydatapack.api.utils.GenericBuilder;
 import com.github.imdabigboss.easydatapack.api.utils.YmlConfig;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -48,11 +55,13 @@ public class EasyDatapackAPI {
     }
 
     /**
-     * Gets the EasyDatapack packet utility.
-     * @return the EasyDatapack packet utility
+     * Creates a builder of the specified type.
+     * @param type the type of the builder
+     * @param args the arguments to pass to the builder
+     * @return the builder
      */
-    public static @NonNull PacketUtil getPacketUtil() {
-        return api.getPacketUtil();
+    public static @NonNull GenericBuilder<?> createBuilder(@NonNull Class<? extends GenericBuilder<?>> type, @NonNull Object... args) {
+        return api.createBuilder(type, args);
     }
 
     /**
@@ -101,5 +110,21 @@ public class EasyDatapackAPI {
      */
     public static @NonNull MapManager getMapManager() {
         return api.getMapManager();
+    }
+
+    /**
+     * Gets the EasyDatapack entity manager.
+     * @return the EasyDatapack entity manager
+     */
+    public static @NonNull EntityManager getEntityManager() {
+        return api.getEntityManager();
+    }
+
+    /**
+     * Gets the EasyDatapack texture pack manager.
+     * @return the EasyDatapack texture manager
+     */
+    public static @NonNull TexturePackManager getTexturePackManager() {
+        return api.getTexturePackManager();
     }
 }
